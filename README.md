@@ -1,2 +1,2 @@
-waldo-ohai-plugins
+ohai-plugins
 ==================
