@@ -33,15 +33,34 @@ def get_apache_errors()
     return errors
 end
 
-php_web Mash.new
+def weblog_file_locations()
+  file_locs = []
+  file_locs << "/var/log/apache2/*error*" if File.exists?("/var/log/apache2")
+  file_locs << "/var/log/httpd/*error*" if File.exists?("/var/log/httpd")
+  return file_locs
+end
 
-errors = get_apache_errors()
-php_web[:errors] = errors.size > 0
-php_web[:error_count] = errors.size
-php_web[:error_lines] = errors
-php_web[:most_recent_error] = get_most_recent_error_date(errors)
+def php_bin()
+  return @php_bin ||= %x(which php).strip
+end
 
-startup_errors = get_startup_errors
-php_web[:startup_errors] = startup_errors.size > 0
-php_web[:startup_error_count] = startup_errors.size
-php_web[:startup_error_lines] = startup_errors
+if php_bin()
+  php_web Mash.new
+  php_web[:bin] = php_bin()
+  startup_errors = get_startup_errors()
+  if startup_errors.size > 0
+    php_web[:startup_errors] = true
+    php_web[:startup_error_count] = startup_errors.size
+    php_web[:startup_error_lines] = startup_errors
+  end
+  log_files = weblog_file_locations()
+  if log_files.size > 0
+    errors = get_apache_errors()
+    if errors.size > 0
+      php_web[:errors] = true
+      php_web[:error_count] = errors.size
+      php_web[:error_lines] = errors
+      php_web[:most_recent_error] = get_most_recent_error_date(errors)
+    end
+  end
+end
