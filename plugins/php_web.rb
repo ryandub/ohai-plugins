@@ -4,6 +4,10 @@ provides "php_web"
 
 TIME_PATTERN = /^(.*):(\[[A-Z][a-z]{2} ([A-Z][a-z]{2} \d{2} \d{2}:\d{2}:\d{2} \d{4})\].*)/
 
+def get_startup_errors()
+    return (`php -v 2>&1 | grep '[wW]arning\\|[Ee]rror'`).split("\n")
+end
+
 def get_most_recent_error_date(errors)
     most_recent = errors.inject{ |most_recent,error|
         (error[0] > most_recent[0]) || (most_recent.nil?) ? error : most_recent
@@ -35,4 +39,9 @@ errors = get_apache_errors()
 php_web[:errors] = errors.size > 0
 php_web[:error_count] = errors.size
 php_web[:error_lines] = errors
-php_web[:most_recent_error] = get_most_recent_error_date(errors
+php_web[:most_recent_error] = get_most_recent_error_date(errors)
+
+startup_errors = get_startup_errors
+php_web[:startup_errors] = startup_errors.size > 0
+php_web[:startup_error_count] = startup_errors.size
+php_web[:startup_error_lines] = startup_errors
