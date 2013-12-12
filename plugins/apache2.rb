@@ -48,14 +48,21 @@ def retrieve_apache_output(apache_command)
 end
 
 def count_apache_clients(apache_command)
-  return (%x(ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l).to_i - 1)
+  command = "ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l"
+  status, stdout, stderr = run_command(:no_status_check => true,
+                                       :command => command)
+  return stdout
 end
 
 def find_apache_executable(os_name)
   if ["ubuntu", "debian"].include?(os_name)
-    return %x(which apache2).strip
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => "which apache2")
+    return stdout.strip
   elsif ["rhel", "centos"].include?(os_name)
-    return %x(which httpd).strip
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => "which httpd")
+    return stdout.strip
   else
     raise(RuntimeError, "Apache test cannot run on os type #{os_name}")
   end
@@ -71,7 +78,10 @@ if apache2_bin = find_apache_executable(lsb[:id].downcase)
 
   case apache2[:mpm]
   when "prefork"
-    max_clients = %x(grep -A8 -i mpm_prefork_module #{apache2[:config_file]}|grep MaxClients).strip
+    command = "grep -A8 -i mpm_prefork_module #{apache2[:config_file]}|grep MaxClients"
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => command)
+    max_clients = stdout.strip
     apache2[:max_clients] = (max_clients.split)[1].to_i
   end
 end
