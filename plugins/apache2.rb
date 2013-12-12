@@ -18,7 +18,7 @@ def parse_apache_output(apache_command)
       response[:config_file] = $1.strip
     end
   end
-  
+
   output[:stderr].each do |line|
     case line
     when /WARNING: Require MaxClients > 0, setting to\s(.+?)?$/
@@ -32,7 +32,7 @@ def parse_apache_output(apache_command)
       response[:syntax_errors] = errors
     end
   end
-  
+
   return @parsed_apache = response
 end
 
@@ -51,7 +51,7 @@ def count_apache_clients(apache_command)
   command = "ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l"
   status, stdout, stderr = run_command(:no_status_check => true,
                                        :command => command)
-  return stdout
+  return stdout.to_i
 end
 
 def find_apache_executable(os_name)
