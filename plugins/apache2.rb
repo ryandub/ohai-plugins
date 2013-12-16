@@ -42,6 +42,9 @@ def retrieve_apache_output(apache_command)
     stdin.close
     output[:pid] = pid
     output[:stdout] = stdout
+  end
+  popen4("#{apache_command} -S") do |pid, stdin, stdout, stderr|
+    stdin.close
     output[:stderr] = stderr
   end
   return output
