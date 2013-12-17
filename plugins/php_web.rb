@@ -53,7 +53,7 @@ def php_bin()
                                            :command => "which php")
       php_bin = stdout.strip
   end
-  return php_bin
+  return php_bin unless php_bin.empty?
 end
 
 if php_bin()

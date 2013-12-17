@@ -61,14 +61,16 @@ def find_apache_executable(os_name)
   if ["ubuntu", "debian"].include?(os_name)
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => "which apache2")
-    return stdout.strip
+    apache2_bin = stdout.strip
   elsif ["rhel", "centos"].include?(os_name)
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => "which httpd")
-    return stdout.strip
+    apache2_bin = stdout.strip
   else
     raise(RuntimeError, "Apache test cannot run on os type #{os_name}")
   end
+
+  return apache2_bin unless apache2_bin.empty?
 end
 
 if apache2_bin = find_apache_executable(lsb[:id].downcase)
