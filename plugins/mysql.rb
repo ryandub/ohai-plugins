@@ -27,7 +27,17 @@ def mysql_bin()
                                          :command => command)
     mysql_bin = stdout.strip
   end
-  return mysql_bin
+  return mysql_bin unless mysql_bin.empty?
+end
+
+def mysqlserver_bin()
+  unless @mysqlserver_bin
+    command = "which mysqld"
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => command)
+    mysqlserver_bin = stdout.strip
+  end
+  return mysqlserver_bin unless mysqlserver_bin.empty?
 end
 
 def mysqladmin_bin()
@@ -37,12 +47,13 @@ def mysqladmin_bin()
                                          :command => command)
     mysqladmin_bin = stdout.strip
   end
-  return mysqladmin_bin
+  return mysqladmin_bin unless mysqladmin_bin.empty?
 end
 
-if mysql_bin()
+# Make sure we are on a MySQL Server and have the `mysql` command
+if mysql_bin() && mysqlserver_bin()
   mysql Mash.new
-  mysql[:bin] = mysql_bin()
+  mysql[:bin] = mysqlserver_bin()
   mysql[:status] = mysql_status()
   mysql[:configuration] = {
     :max_connections => max_sql_connections()
