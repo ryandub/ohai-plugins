@@ -1,7 +1,14 @@
+require_plugin "platform_family"
+
 provides "routes"
 
-lines_v4 = `netstat -nr4`.split(/\n/)[2..-1]
-lines_v6 = `netstat -nr6`.split(/\n/)[2..-1]
+if platform_family.eql?("debian")
+  lines_v4 = `netstat -nr4`.split(/\n/)[2..-1]
+  lines_v6 = `netstat -nr6`.split(/\n/)[2..-1]
+elsif platform_family.eql?("rhel")
+  lines_v4 = `netstat -nr`.split(/\n/)[2..-1]
+  lines_v6 = `netstat --inet6 -nr`.split(/\n/)[2..-1]
+end
 
 routes Mash.new
 if lines_v4
