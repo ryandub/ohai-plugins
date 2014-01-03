@@ -5,7 +5,10 @@ provides "php_web"
 TIME_PATTERN = /^(.*):(\[[A-Z][a-z]{2} ([A-Z][a-z]{2} \d{2} \d{2}:\d{2}:\d{2} \d{4})\].*)/
 
 def get_startup_errors()
-    return (`php -v 2>&1 | grep '[wW]arning\\|[Ee]rror'`).split("\n")
+    command = "php -v 2>&1 | grep '[wW]arning\\|[Ee]rror'"
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => command)
+    return stdout.split("\n")
 end
 
 def get_most_recent_error_date(errors)
@@ -19,10 +22,14 @@ def get_apache_errors()
     php_web[:status] = 1
     errors = []
     if File.exists?("/var/log/apache2")
-        errors = (`tail -n 5000 /var/log/apache2/*error* | grep 'PHP Fatal error:'`).split("\n")
+      log_file = "/var/log/apache2"
     elsif File.exists?("/var/log/httpd")
-        errors = (`tail -n 5000 /var/log/httpd/*error* | grep 'PHP Fatal error:'`).split("\n")
+        log_file = "/var/log/httpd"
     end
+    command = "tail -n 5000 #{log_file}/*error* | grep 'PHP Fatal error:'"
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => command)
+    errors = stdout.split("\n")
     php_web[:status] = 2
     errors.map! { |e|
         match_data = TIME_PATTERN.match(e)
@@ -41,7 +48,12 @@ def weblog_file_locations()
 end
 
 def php_bin()
-  return @php_bin ||= %x(which php).strip
+  unless @php_bin
+      status, stdout, stderr = run_command(:no_status_check => true,
+                                           :command => "which php")
+      php_bin = stdout.strip
+  end
+  return php_bin unless php_bin.empty?
 end
 
 if php_bin()

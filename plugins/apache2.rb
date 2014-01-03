@@ -18,7 +18,7 @@ def parse_apache_output(apache_command)
       response[:config_file] = $1.strip
     end
   end
-  
+
   output[:stderr].each do |line|
     case line
     when /WARNING: Require MaxClients > 0, setting to\s(.+?)?$/
@@ -32,7 +32,7 @@ def parse_apache_output(apache_command)
       response[:syntax_errors] = errors
     end
   end
-  
+
   return @parsed_apache = response
 end
 
@@ -51,17 +51,26 @@ def retrieve_apache_output(apache_command)
 end
 
 def count_apache_clients(apache_command)
-  return (%x(ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l).to_i - 1)
+  command = "ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l"
+  status, stdout, stderr = run_command(:no_status_check => true,
+                                       :command => command)
+  return stdout.to_i
 end
 
 def find_apache_executable(os_name)
   if ["ubuntu", "debian"].include?(os_name)
-    return %x(which apache2).strip
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => "which apache2")
+    apache2_bin = stdout.strip
   elsif ["rhel", "centos"].include?(os_name)
-    return %x(which httpd).strip
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => "which httpd")
+    apache2_bin = stdout.strip
   else
     raise(RuntimeError, "Apache test cannot run on os type #{os_name}")
   end
+
+  return apache2_bin unless apache2_bin.empty?
 end
 
 if apache2_bin = find_apache_executable(lsb[:id].downcase)
@@ -74,7 +83,10 @@ if apache2_bin = find_apache_executable(lsb[:id].downcase)
 
   case apache2[:mpm]
   when "prefork"
-    max_clients = %x(grep -A8 -i mpm_prefork_module #{apache2[:config_file]}|grep MaxClients).strip
+    command = "grep -A8 -i mpm_prefork_module #{apache2[:config_file]}|grep MaxClients"
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => command)
+    max_clients = stdout.strip
     apache2[:max_clients] = (max_clients.split)[1].to_i
   end
 end
