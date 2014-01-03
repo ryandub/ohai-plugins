@@ -19,9 +19,9 @@ def get_apache_errors()
     php_web[:status] = 1
     errors = []
     if File.exists?("/var/log/apache2")
-        errors = (`grep 'PHP Fatal error:' /var/log/apache2/*error*`).split("\n")
+        errors = (`tail -n 5000 /var/log/apache2/*error* | grep 'PHP Fatal error:'`).split("\n")
     elsif File.exists?("/var/log/httpd")
-        errors = (`grep 'PHP Fatal error:' /var/log/httpd/*error*`).split("\n")
+        errors = (`tail -n 5000 /var/log/httpd/*error* | grep 'PHP Fatal error:'`).split("\n")
     end
     php_web[:status] = 2
     errors.map! { |e|
