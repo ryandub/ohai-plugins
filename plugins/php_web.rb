@@ -22,11 +22,11 @@ def get_apache_errors()
     php_web[:status] = 1
     errors = []
     if File.exists?("/var/log/apache2")
-        log_file = "/var/log/apache2"
+      log_file = "/var/log/apache2"
     elsif File.exists?("/var/log/httpd")
         log_file = "/var/log/httpd"
     end
-    command = "grep 'PHP Fatal error:' #{log_file}/*error*"
+    command = "tail -n 5000 #{log_file}/*error* | grep 'PHP Fatal error:'"
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => command)
     errors = stdout.split("\n")
