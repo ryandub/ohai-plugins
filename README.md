@@ -20,19 +20,30 @@ This command runs `Ohai` and tells it to use the plugins located in this repo.
 ## Ohai-Solo
 Ohai-Solo is a package that contains an embedded version of Ruby 1.9.3, Ohai, and the plugins from this repo. Packages are built using Opscode's [Omnibus](https://github.com/opscode/omnibus-ruby) system. You can find the Omnibus build environment for Ohai-Solo [here](https://github.com/ryandub/omnibus-ohai-solo).
 
-####Installing Ohai-Solo:
-
-Packages are currently provided for these distributions:
+Packages are currently provided/tested for these distributions:
 
 * Ubuntu 10.04
+* Ubuntu 10.10 (Uses 10.04 package)
+* Ubuntu 11.04 (Uses 11.10 package)
 * Ubuntu 11.10
 * Ubuntu 12.04
 * Ubuntu 12.10
 * Ubuntu 13.04
+* Ubuntu 13.10 (Uses 13.04 package)
 * CentOS/RHEL 5 (use "el" as platform name)
 * CentOS/RHEL 6 (use "el" as platform name)
 * Debian 6
 * Debian 7
+
+###Installing Ohai-Solo:
+
+
+```
+curl -sSL http://ohai.rax.io/install.sh|bash
+ohai-solo
+```
+
+###Installing Ohai-Solo (manual):
 
 To use `ohai-solo`, grab the latest package for your distribution by querying the list of packages (this example uses [HTTPie](https://github.com/jkbr/httpie) - if you don't have it, you should):
 
