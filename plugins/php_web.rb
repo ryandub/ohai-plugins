@@ -5,7 +5,7 @@ provides "php_web"
 TIME_PATTERN = /^(.*):(\[[A-Z][a-z]{2} ([A-Z][a-z]{2} \d{2} \d{2}:\d{2}:\d{2} \d{4})\].*)/
 
 def get_startup_errors()
-    command = "php -v 2>&1 | grep '[wW]arning\\|[Ee]rror'"
+    command = "php -v 2>&1 | grep -E '[wW]arning\\|[Ee]rror'"
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => command)
     return stdout.split("\n")
@@ -76,3 +76,4 @@ if php_bin()
     end
   end
 end
+
