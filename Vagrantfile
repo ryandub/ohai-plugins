@@ -8,10 +8,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network :private_network, ip: "33.33.33.10"
 
-  config.vm.provision :shell, :inline => "apt-get -y install curl;\
-    FILE=`curl -s http://ohai.rax.io/latest.ubuntu.12.04.x86_64.json\
-    |python -mjson.tool|grep basename\
-    |awk '{print $2}'|sed 's/[\"|\,]//g'`;\
-    wget http://ohai.rax.io/$FILE -O /tmp/$FILE;\
-    dpkg -i /tmp/$FILE;echo -e '\n\n Run /opt/ohai-solo/bin/ohai -d /vagrant/plugins to test plugins'"
+  config.vm.provision :shell, :inline => "wget http://ohai.rax.io/install.sh -O /tmp/install.sh;\
+    bash /tmp/install.sh;\
+    echo -e '\n\n Run /opt/ohai-solo/bin/ohai -d /vagrant/plugins to test plugins'"
 end
