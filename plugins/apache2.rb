@@ -1,6 +1,6 @@
 provides "apache2"
 
-require_plugin 'linux::lsb'
+require_plugin 'linux::platform'
 
 def parse_apache_output(apache_command)
   return @parsed_apache if @parsed_apache
@@ -57,44 +57,44 @@ def count_apache_clients(apache_command)
   return stdout.to_i
 end
 
-def find_apache_executable(os_name)
-  if ["ubuntu", "debian"].include?(os_name)
+def find_apache_executable(platform_family)
+  if platform_family == "debian"
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => "which apache2")
     apache2_bin = stdout.strip
-  elsif ["rhel", "centos"].include?(os_name)
+  elsif platform_family == "rhel"
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => "which httpd")
     apache2_bin = stdout.strip
   else
-    raise(RuntimeError, "Apache test cannot run on os type #{os_name}")
+    raise(RuntimeError, "Apache test cannot run on os type #{platform_family}")
   end
 
   return apache2_bin unless apache2_bin.empty?
 end
 
-def find_apache_user(os_name)
-  if ["ubuntu", "debian"].include?(os_name)
+def find_apache_user(platform_family)
+  if platform_family == "debian"
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => "ps -ef|awk '/apache2/ && !/root/ {print $1}' | uniq")
     apache_user = stdout.strip
-  elsif ["rhel", "centos"].include?(os_name)
+  elsif platform_family == "rhel"
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => "ps -ef|awk '/httpd/ && !/root/ {print $1}' | uniq")
     apache_user = stdout.strip
   else
-    raise(RuntimeError, "Apache test cannot run on os type #{os_name}")
+    raise(RuntimeError, "Apache test cannot run on os type #{platform_family}")
   end
 
   return apache_user unless apache_user.empty?
 end
 
 
-if apache2_bin = find_apache_executable(lsb[:id].downcase)
+if apache2_bin = find_apache_executable(platform_family)
   apache2 Mash.new
   apache2[:bin] = apache2_bin
   apache2[:clients] = count_apache_clients(apache2_bin)
-  apache2[:user] = find_apache_user(lsb[:id].downcase)
+  apache2[:user] = find_apache_user(platform_family)
   apache2.merge!(parse_apache_output(apache2_bin))
 
   apache2[:config_file] = apache2[:config_path] + "/" + apache2[:config_file]
