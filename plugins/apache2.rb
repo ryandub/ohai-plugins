@@ -73,13 +73,6 @@ def find_apache_executable(os_name)
   return apache2_bin unless apache2_bin.empty?
 end
 
-def find_apache_user()
-  command = "ps -ef|awk '/httpd|apache2/ && !/root/ {print $1}' | uniq"
-  status, stdout, stderr = run_command(:no_status_check => true,
-                                       :command => command)
-  return stdout.to_i
-end
-
 def find_apache_user(os_name)
   if ["ubuntu", "debian"].include?(os_name)
     status, stdout, stderr = run_command(:no_status_check => true,
