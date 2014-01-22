@@ -73,10 +73,35 @@ def find_apache_executable(os_name)
   return apache2_bin unless apache2_bin.empty?
 end
 
+def find_apache_user()
+  command = "ps -ef|awk '/httpd|apache2/ && !/root/ {print $1}' | uniq"
+  status, stdout, stderr = run_command(:no_status_check => true,
+                                       :command => command)
+  return stdout.to_i
+end
+
+def find_apache_user(os_name)
+  if ["ubuntu", "debian"].include?(os_name)
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => "ps -ef|awk '/apache2/ && !/root/ {print $1}' | uniq")
+    apache_user = stdout.strip
+  elsif ["rhel", "centos"].include?(os_name)
+    status, stdout, stderr = run_command(:no_status_check => true,
+                                         :command => "ps -ef|awk '/httpd/ && !/root/ {print $1}' | uniq")
+    apache_user = stdout.strip
+  else
+    raise(RuntimeError, "Apache test cannot run on os type #{os_name}")
+  end
+
+  return apache_user unless apache_user.empty?
+end
+
+
 if apache2_bin = find_apache_executable(lsb[:id].downcase)
   apache2 Mash.new
   apache2[:bin] = apache2_bin
   apache2[:clients] = count_apache_clients(apache2_bin)
+  apache2[:user] = find_apache_user(lsb[:id].downcase)
   apache2.merge!(parse_apache_output(apache2_bin))
 
   apache2[:config_file] = apache2[:config_path] + "/" + apache2[:config_file]
