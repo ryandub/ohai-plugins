@@ -6,7 +6,7 @@ Ohai.plugin(:Apache2) do
     return @parsed_apache if @parsed_apache
     response = {}
     output = retrieve_apache_output(apache_command)
-    output[:stdout].each do |line|
+    output[:stdout].lines do |line|
       case line
       when /-D HTTPD_ROOT=["']?(.+?)["']?$/
         response[:config_path] = $1
@@ -19,7 +19,7 @@ Ohai.plugin(:Apache2) do
       end
     end
 
-    output[:stderr].each do |line|
+    output[:stderr].lines do |line|
       case line
       when /WARNING: Require MaxClients > 0, setting to\s(.+?)?$/
         response[:max_clients] = $1.to_i
@@ -38,34 +38,31 @@ Ohai.plugin(:Apache2) do
 
   def retrieve_apache_output(apache_command)
     output = {}
-    popen4("#{apache_command} -V") do |pid, stdin, stdout, stderr|
-      stdin.close
-      output[:pid] = pid
-      output[:stdout] = stdout
-    end
-    popen4("#{apache_command} -S") do |pid, stdin, stdout, stderr|
-      stdin.close
-      output[:stderr] = stderr
+    so = shell_out("#{apache_command} -V")
+    output[:stdout] = so.stdout
+    if platform_family == "debian"
+      so = shell_out("#{apache_command} -t")
+      output[:stderr] = so.stderr
+    elsif platform_family == "rhel"
+      so = shell_out("#{apache_command} -S")
+      output[:stderr] = so.stderr
     end
     return output
   end
 
   def count_apache_clients(apache_command)
     command = "ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l"
-    status, stdout, stderr = run_command(:no_status_check => true,
-                                         :command => command)
-    return stdout.to_i
+    so = shell_out(command)
+    return so.stdout.to_i
   end
 
   def find_apache_executable(platform_family)
     if platform_family == "debian"
-      status, stdout, stderr = run_command(:no_status_check => true,
-                                           :command => "which apache2")
-      apache2_bin = stdout.strip
+      so = shell_out("which apache2")
+      apache2_bin = so.stdout.strip
     elsif platform_family == "rhel"
-      status, stdout, stderr = run_command(:no_status_check => true,
-                                           :command => "which httpd")
-      apache2_bin = stdout.strip
+      so = shell_out("which httpd")
+      apache2_bin = so.stdout.strip
     else
       raise(RuntimeError, "Apache test cannot run on os type #{platform_family}")
     end
@@ -75,18 +72,21 @@ Ohai.plugin(:Apache2) do
 
   def find_apache_user(platform_family)
     if platform_family == "debian"
-      status, stdout, stderr = run_command(:no_status_check => true,
-                                           :command => "ps -ef|awk '/apache2/ && !/root/ {print $1}' | uniq")
-      apache_user = stdout.strip
+      so = shell_out("ps -ef|awk '/apache2/ && !/root/ {print $1}' | uniq")
+      apache_user = so.stdout.strip
     elsif platform_family == "rhel"
-      status, stdout, stderr = run_command(:no_status_check => true,
-                                           :command => "ps -ef|awk '/httpd/ && !/root/ {print $1}' | uniq")
-      apache_user = stdout.strip
+      so = shell_out("ps -ef|awk '/httpd/ && !/root/ {print $1}' | uniq")
+      apache_user = so.stdout.strip
     else
       raise(RuntimeError, "Apache test cannot run on os type #{platform_family}")
     end
 
     return apache_user unless apache_user.empty?
+  end
+
+  def find_apache2ctl()
+    so = shell_out("which apache2ctl")
+    return so.stdout.strip
   end
 
   collect_data(:linux) do
@@ -95,16 +95,21 @@ Ohai.plugin(:Apache2) do
       apache2[:bin] = apache2_bin
       apache2[:clients] = count_apache_clients(apache2_bin)
       apache2[:user] = find_apache_user(platform_family)
-      apache2.merge!(parse_apache_output(apache2_bin))
-
-      apache2[:config_file] = apache2[:config_path] + "/" + apache2[:config_file]
+      if platform_family == "debian"
+        apache2ctl_bin = find_apache2ctl()
+      end
+      apache2.merge!(parse_apache_output(apache2ctl_bin || apache2_bin))
+      if apache2[:config_path] == '"'
+        apache2[:config_path] = File.dirname(apache2[:config_file])
+      else
+        apache2[:config_file] = File.join(apache2[:config_path], apache2[:config_file])
+      end
 
       case apache2[:mpm]
       when "prefork"
         command = "grep -A8 -i mpm_prefork_module #{apache2[:config_file]}|grep MaxClients"
-        status, stdout, stderr = run_command(:no_status_check => true,
-                                             :command => command)
-        max_clients = stdout.strip
+        so = shell_out(command)
+        max_clients = so.stdout.strip
         apache2[:max_clients] = (max_clients.split)[1].to_i
       end
     end

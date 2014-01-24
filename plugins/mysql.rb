@@ -26,7 +26,11 @@ Ohai.plugin(:Mysql) do
 
   def mysqlserver_bin()
     unless @mysqlserver_bin
-      so = shell_out("which mysqld")
+      if platform_family == "debian"
+        so = shell_out("which mysqld")
+      elsif platform_family == "rhel"
+        so = shell_out("which mysqld_safe")
+      end
       mysqlserver_bin = so.stdout.strip
     end
     return mysqlserver_bin unless mysqlserver_bin.empty?

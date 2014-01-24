@@ -2,9 +2,9 @@ Ohai.plugin(:RemoteServices) do
   provides "remote_services"
 
   collect_data(:linux) do
-    output = `netstat -tlpen`
+    output = shell_out("netstat -tlpen")
     if output
-      lines = output.split(/\n/).reject(&:empty?)[2..-1]
+      lines = output.stdout.split(/\n/).reject(&:empty?)[2..-1]
     end
 
     remote_services Array.new
