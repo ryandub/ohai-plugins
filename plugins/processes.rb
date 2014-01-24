@@ -4,11 +4,9 @@ Ohai.plugin(:Processes) do
   collect_data(:linux) do
     processes Mash.new
 
-    command = "ps -eo pid,euser,start_time,nice,%cpu,%mem,cmd"
-    status, stdout, stderr = run_command(:no_status_check => true,
-                                         :command => command)
+    so = shell_out("ps -eo pid,euser,start_time,nice,%cpu,%mem,cmd")
 
-    stdout.lines do |line|
+    so.stdout.lines do |line|
       case line
       when /  PID EUSER    START  NI %CPU %MEM CMD/
         next

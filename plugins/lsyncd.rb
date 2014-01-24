@@ -3,10 +3,8 @@ Ohai.plugin(:Lsyncd) do
 
   def find_lsyncd_bin
     unless @lsyncd_bin
-      command = "which lsyncd"
-      status, stdout, stderr = run_command(:no_status_check => true,
-                                           :command => command)
-      lsyncd_bin = stdout.strip
+      so = shell_out("which lsyncd")
+      lsyncd_bin = so.stdout.strip
     end
     return lsyncd_bin unless lsyncd_bin.empty?
   end
@@ -14,9 +12,8 @@ Ohai.plugin(:Lsyncd) do
   def find_lsyncd_process(lsyncd_command)
     unless @lsyncd_process
       command = "ps -eo euser,ruser,suser,fuser,f,cmd|grep #{lsyncd_command}|grep -v grep"
-      status, stdout, stderr = run_command(:no_status_check => true,
-                                           :command => command)
-      lsyncd_process = stdout.strip
+      so = shell_out(command)
+      lsyncd_process = so.stdout.strip
     end
     return lsyncd_process unless lsyncd_process.empty?
   end
