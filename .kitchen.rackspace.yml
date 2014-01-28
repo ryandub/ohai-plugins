@@ -38,23 +38,3 @@ platforms:
   driver_config:
     image_id: 9522c27d-51d9-44ee-8eb3-fb7b14fd4042
 
-suites:
-- name: ohaiplugins
-  run_list:
-    - recipe[build-essential]
-    - recipe[git]
-    - recipe[apache2]
-    - recipe[mysql::client]
-    - recipe[mysql::server]
-    - recipe[ohai_plugins_test::default]
-  attributes:
-    build_essential:
-      compiletime: true
-    ohai_plugins_test:
-      ref: <%= ENV['OHAI_PLUGINS_VERSION'] || "HEAD" %>
-      ohai:
-        ref: <%= ENV['OHAI_VERSION'] || "HEAD" %>
-    mysql:
-      server_root_password: passw0rd
-      server_debian_password: passw0rd
-      server_repl_password: passw0rd
