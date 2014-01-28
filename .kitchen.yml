@@ -1,42 +1,58 @@
 ---
-driver_plugin: rackspace
+driver:
+  name: vagrant
 driver_config:
   require_chef_omnibus: latest
-  rackspace_username: <%= ENV['RS_USERNAME'] %>
-  rackspace_api_key: <%= ENV['RS_APIKEY'] %>
-  test_base_path: /opt/build
-  public_key_path: <%= ENV['SSH_KEY_FILE'] %>
-  flavor_id: <%= ENV['RS_FLAVOR'] %>
-  rackspace_region: <%= ENV['RS_REGION'] %>
+
+provisioner:
+  name: chef_solo
 
 platforms:
-- name: ubuntu-1304
-  driver_config:
-    image_id: 4b54f5a0-137f-4751-8e7c-fe707185e531
-- name: ubuntu-1210
-  driver_config:
-    image_id: d45ed9c5-d6fc-4c9d-89ea-1b3ae1c83999
-- name: ubuntu-1204
-  driver_config:
-    image_id: 80fbcb55-b206-41f9-9bc2-2dd7aac6c061
-- name: ubuntu-1110
-  driver_config:
-    image_id: 3afe97b2-26dc-49c5-a2cc-a2fc8d80c001
-- name: ubuntu-1004
-  driver_config:
-    image_id: aab63bcf-89aa-440f-b0c7-c7a1c611914b
-- name: debian-6
-  driver_config:
-    image_id: 695ca76e-fc0d-4e36-82e0-8ed66480a999
-- name: debian-7
-  driver_config:
-    image_id: 857d7d36-34f3-409f-8435-693e8797be8b
-- name: centos-6
-  driver_config:
-    image_id: f70ed7c7-b42e-4d77-83d8-40fa29825b85
-- name: centos-5
-  driver_config:
-    image_id: 9522c27d-51d9-44ee-8eb3-fb7b14fd4042
+  - name: ubuntu-10.04
+    driver_config:
+      box: vagrant-ubuntu-10.04
+      box_url: http://files.vagrantup.com/lucid64.box
+      require_chef_omnibus: true
+  - name: ubuntu-12.04
+    driver_config:
+      box: vagrant-ubuntu-12.04
+      box_url: http://files.vagrantup.com/precise64.box
+      require_chef_omnibus: true
+  - name: ubuntu-12.10
+    driver_config:
+      box: vagrant-ubuntu-12.10
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-12.10_chef-provisionerless.box 
+      require_chef_omnibus: true
+  - name: ubuntu-13.04
+    driver_config:
+      box: vagrant-ubtuntu-13.04
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.04_chef-provisionerless.box 
+      require_chef_omnibus: true
+  - name: ubuntu-13.10
+    driver_config:
+      box: vagrant-ubuntu-13.10
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box 
+      require_chef_omnibus: true
+  - name: centos-5
+    driver_config:
+      box: vagrant-centos-5
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-5.10_chef-provisionerless.box 
+      require_chef_omnibus: true
+  - name: centos-6
+    driver_config:
+      box: vagrant-centos-6
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box 
+      require_chef_omnibus: true
+  - name: debian-6
+    driver_config:
+      box: vagrant-debian-6
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-6.0.8_chef-provisionerless.box 
+      require_chef_omnibus: true
+  - name: debian-7
+    driver_config:
+      box: vagrant-debian-7
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-7.2.0_chef-provisionerless.box 
+      require_chef_omnibus: true
 
 suites:
 - name: ohaiplugins
@@ -58,3 +74,4 @@ suites:
       server_root_password: passw0rd
       server_debian_password: passw0rd
       server_repl_password: passw0rd
+
