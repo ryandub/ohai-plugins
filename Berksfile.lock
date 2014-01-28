@@ -1,0 +1,46 @@
+{
+  "sources": {
+    "build-essential": {
+      "locked_version": "1.4.0"
+    },
+    "ohai_plugins_test": {
+      "path": "./cookbooks/ohai_plugins_test"
+    },
+    "apache2": {
+      "locked_version": "1.8.15",
+      "git": "git://github.com/opscode-cookbooks/apache2.git",
+      "ref": "baaa99ce12d61b0b04f32103418d8c4d4aac64b2"
+    },
+    "mysql": {
+      "locked_version": "4.0.20",
+      "git": "git://github.com/ryandub/mysql.git",
+      "ref": "4432330b04ecfc17bd37f0d258dcda038025c6cb"
+    },
+    "git": {
+      "locked_version": "2.9.1",
+      "git": "git://github.com/opscode-cookbooks/git.git",
+      "ref": "fe2713e528096e5d22441fe53808c79ea77fd0b3"
+    },
+    "openssl": {
+      "locked_version": "1.1.0"
+    },
+    "dmg": {
+      "locked_version": "1.1.0"
+    },
+    "windows": {
+      "locked_version": "1.12.8"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    },
+    "runit": {
+      "locked_version": "1.5.8"
+    },
+    "yum": {
+      "locked_version": "3.0.6"
+    },
+    "yum-epel": {
+      "locked_version": "0.2.0"
+    }
+  }
+}
