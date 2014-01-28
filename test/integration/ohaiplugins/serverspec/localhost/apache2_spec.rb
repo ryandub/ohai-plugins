@@ -7,8 +7,6 @@ platform_version = OHAI['platform_version'].to_f
 
 describe "Apache2 Plugin" do
 
-  puts platform_family
-
   if platform_family == 'debian'
     apache_user = 'www-data'
     apache_bin = '/usr/sbin/apache2'
