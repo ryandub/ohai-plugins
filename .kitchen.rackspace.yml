@@ -1,5 +1,5 @@
 ---
-driver_plugin: rackspace
+driver: rackspace
 driver_config:
   require_chef_omnibus: latest
   rackspace_username: <%= ENV['RS_USERNAME'] %>
