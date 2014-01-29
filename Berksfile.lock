@@ -21,6 +21,16 @@
       "git": "git://github.com/opscode-cookbooks/git.git",
       "ref": "fe2713e528096e5d22441fe53808c79ea77fd0b3"
     },
+    "yum": {
+      "locked_version": "3.0.9",
+      "git": "git://github.com/opscode-cookbooks/yum.git",
+      "ref": "3799e551ac5441e0aacf1893de3b5fa24fe8da68"
+    },
+    "yum-epel": {
+      "locked_version": "0.2.1",
+      "git": "git://github.com/opscode-cookbooks/yum-epel.git",
+      "ref": "549f9a479d801bfb48ec8d81b03d1b6b28e7e7a0"
+    },
     "openssl": {
       "locked_version": "1.1.0"
     },
@@ -35,12 +45,6 @@
     },
     "runit": {
       "locked_version": "1.5.8"
-    },
-    "yum": {
-      "locked_version": "3.0.6"
-    },
-    "yum-epel": {
-      "locked_version": "0.2.0"
     }
   }
 }
