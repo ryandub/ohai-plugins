@@ -10,6 +10,9 @@ driver_config:
   rackspace_region: <%= ENV['RS_REGION'] %>
 
 platforms:
+- name: ubuntu-1310
+  driver_config:
+    image_id: df27d481-63a5-40ca-8920-3d132ed643d9 
 - name: ubuntu-1304
   driver_config:
     image_id: 4b54f5a0-137f-4751-8e7c-fe707185e531
