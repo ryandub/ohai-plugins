@@ -8,8 +8,8 @@
     },
     "apache2": {
       "locked_version": "1.8.15",
-      "git": "git://github.com/opscode-cookbooks/apache2.git",
-      "ref": "baaa99ce12d61b0b04f32103418d8c4d4aac64b2"
+      "git": "git://github.com/onehealth-cookbooks/apache2.git",
+      "ref": "bab6495f825d21371552599ed46a846fb4ad5267"
     },
     "mysql": {
       "locked_version": "4.0.20",
