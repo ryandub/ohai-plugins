@@ -1,0 +1,50 @@
+{
+  "sources": {
+    "build-essential": {
+      "locked_version": "1.4.0"
+    },
+    "ohai_plugins_test": {
+      "path": "./cookbooks/ohai_plugins_test"
+    },
+    "apache2": {
+      "locked_version": "1.8.15",
+      "git": "git://github.com/onehealth-cookbooks/apache2.git",
+      "ref": "bab6495f825d21371552599ed46a846fb4ad5267"
+    },
+    "mysql": {
+      "locked_version": "4.0.20",
+      "git": "git://github.com/ryandub/mysql.git",
+      "ref": "4432330b04ecfc17bd37f0d258dcda038025c6cb"
+    },
+    "git": {
+      "locked_version": "2.9.1",
+      "git": "git://github.com/opscode-cookbooks/git.git",
+      "ref": "fe2713e528096e5d22441fe53808c79ea77fd0b3"
+    },
+    "yum": {
+      "locked_version": "3.0.9",
+      "git": "git://github.com/opscode-cookbooks/yum.git",
+      "ref": "3799e551ac5441e0aacf1893de3b5fa24fe8da68"
+    },
+    "yum-epel": {
+      "locked_version": "0.2.1",
+      "git": "git://github.com/opscode-cookbooks/yum-epel.git",
+      "ref": "549f9a479d801bfb48ec8d81b03d1b6b28e7e7a0"
+    },
+    "openssl": {
+      "locked_version": "1.1.0"
+    },
+    "dmg": {
+      "locked_version": "1.1.0"
+    },
+    "windows": {
+      "locked_version": "1.12.8"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    },
+    "runit": {
+      "locked_version": "1.5.8"
+    }
+  }
+}
