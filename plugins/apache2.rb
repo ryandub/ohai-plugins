@@ -87,6 +87,9 @@ if apache2_bin = find_apache_executable(lsb[:id].downcase)
     status, stdout, stderr = run_command(:no_status_check => true,
                                          :command => command)
     max_clients = stdout.strip
-    apache2[:max_clients] = (max_clients.split)[1].to_i
+    max_clients = (max_clients.split)[1].to_i
+    if max_clients > 0
+      apache2[:max_clients] = max_clients
+    end
   end
 end
