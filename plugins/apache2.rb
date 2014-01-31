@@ -110,7 +110,10 @@ Ohai.plugin(:Apache2) do
         command = "grep -A8 -i mpm_prefork_module #{apache2[:config_file]}|grep MaxClients"
         so = shell_out(command)
         max_clients = so.stdout.strip
-        apache2[:max_clients] = (max_clients.split)[1].to_i
+        max_clients = (max_clients.split)[1].to_i
+        if max_clients > 0
+          apache2[:max_clients] = max_clients
+        end
       end
     end
   end
