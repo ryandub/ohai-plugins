@@ -113,6 +113,7 @@ Ohai.plugin(:Apache2) do
         max_clients = (max_clients.split)[1].to_i
         if max_clients > 0
           apache2[:max_clients] = max_clients
+        end
       end
     end
   end
