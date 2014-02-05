@@ -50,8 +50,8 @@ Ohai.plugin(:Apache2) do
     return output
   end
 
-  def count_apache_clients(apache_command)
-    command = "ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l"
+  def count_apache_clients(apache_command, apache_user)
+    command = "ps -u #{apache_user} -o cmd| grep -c  #{apache_command}"
     so = shell_out(command)
     return so.stdout.to_i
   end
@@ -93,8 +93,8 @@ Ohai.plugin(:Apache2) do
     if apache2_bin = find_apache_executable(platform_family)
       apache2 Mash.new
       apache2[:bin] = apache2_bin
-      apache2[:clients] = count_apache_clients(apache2_bin)
       apache2[:user] = find_apache_user(platform_family)
+      apache2[:clients] = count_apache_clients(apache2_bin, apache2[:user])
       if platform_family == "debian"
         apache2ctl_bin = find_apache2ctl()
       end
