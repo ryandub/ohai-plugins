@@ -58,10 +58,10 @@ Ohai.plugin(:Apache2) do
 
   def find_apache_executable(platform_family)
     if platform_family == "debian"
-      so = shell_out("which apache2")
+      so = shell_out("command -v apache2")
       apache2_bin = so.stdout.strip
     elsif platform_family == "rhel"
-      so = shell_out("which httpd")
+      so = shell_out("command -v httpd")
       apache2_bin = so.stdout.strip
     else
       raise(RuntimeError, "Apache test cannot run on os type #{platform_family}")
@@ -85,7 +85,7 @@ Ohai.plugin(:Apache2) do
   end
 
   def find_apache2ctl()
-    so = shell_out("which apache2ctl")
+    so = shell_out("command -v apache2ctl")
     return so.stdout.strip
   end
 
