@@ -98,7 +98,7 @@ Ohai.plugin(:Connections) do
     active.keys.each do |address|
       ports = active[address]
       if ports == []
-        Ohai::Log.info("Adding #{address} as a remote without ports")
+        Ohai::Log.debug("Adding #{address} as a remote without ports")
         connections[address] ||= []
       else
         ports.each do |port|
@@ -118,7 +118,7 @@ Ohai.plugin(:Connections) do
             Ohai::Log.debug("Skipping #{address}:#{port} because it looks like"\
                             "an inbound connection to listener")
           else
-            Ohai::Log.info("Adding #{address} as a remote to #{port}")
+            Ohai::Log.debug("Adding #{address} as a remote to #{port}")
             connections[address] ||= []
             connections[address] |= [port]
           end
