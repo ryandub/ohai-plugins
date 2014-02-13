@@ -126,7 +126,7 @@ Ohai.plugin(:Apache2) do
         if max_clients > 0
           apache2[:max_clients] = max_clients
         else
-          apache2[:max_clients] = "not found"
+          Ohai::Log.debug("Unable to parse max_clients from #{apache2[:config_file]}")
         end
       end
     end
