@@ -18,7 +18,7 @@ Ohai.plugin(:Mysql) do
 
   def mysql_bin()
     unless @mysql_bin
-      so = shell_out("which mysql")
+      so = shell_out("/bin/bash -c 'command -v mysql'")
       mysql_bin = so.stdout.strip
     end
     return mysql_bin unless mysql_bin.empty?
@@ -27,9 +27,9 @@ Ohai.plugin(:Mysql) do
   def mysqlserver_bin()
     unless @mysqlserver_bin
       if platform_family == "debian"
-        so = shell_out("which mysqld")
+        so = shell_out("/bin/bash -c 'command -v mysqld'")
       elsif platform_family == "rhel"
-        so = shell_out("which mysqld_safe")
+        so = shell_out("/bin/bash -c 'command -v mysqld_safe'")
       end
       mysqlserver_bin = so.stdout.strip
     end
@@ -38,7 +38,7 @@ Ohai.plugin(:Mysql) do
 
   def mysqladmin_bin()
     unless @mysqladmin_bin
-      so = shell_out("which mysqladmin")
+      so = shell_out("/bin/bash -c 'command -v mysqladmin'")
       mysqladmin_bin = so.stdout.strip
     end
     return mysqladmin_bin unless mysqladmin_bin.empty?

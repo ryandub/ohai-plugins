@@ -45,7 +45,7 @@ Ohai.plugin(:PHPWeb) do
 
   def php_bin()
     unless @php_bin
-        so = shell_out("which php")
+        so = shell_out("/bin/bash -c 'command -v php'")
         php_bin = so.stdout.strip
     end
     return php_bin unless php_bin.empty?

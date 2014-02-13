@@ -70,18 +70,18 @@ Ohai.plugin(:Apache2) do
     return output
   end
 
-  def count_apache_clients(apache_command)
-    command = "ps -eo euser,ruser,suser,fuser,f,cmd |grep #{apache_command}|grep -v grep|wc -l"
+  def count_apache_clients(apache_command, apache_user)
+    command = "ps -u #{apache_user} -o cmd| grep -c  #{apache_command}"
     so = shell_out(command)
     return so.stdout.to_i
   end
 
   def find_apache_executable(platform_family)
     if platform_family == "debian"
-      so = shell_out("which apache2")
+      so = shell_out("/bin/bash -c 'command -v apache2'")
       apache2_bin = so.stdout.strip
     elsif platform_family == "rhel"
-      so = shell_out("which httpd")
+      so = shell_out("/bin/bash -c 'command -v httpd'")
       apache2_bin = so.stdout.strip
     else
       raise(RuntimeError, "Apache test cannot run on os type #{platform_family}")
@@ -105,7 +105,7 @@ Ohai.plugin(:Apache2) do
   end
 
   def find_apache2ctl()
-    so = shell_out("which apache2ctl")
+    so = shell_out("/bin/bash -c 'command -v apache2ctl'")
     return so.stdout.strip
   end
 
@@ -113,8 +113,8 @@ Ohai.plugin(:Apache2) do
     if apache2_bin = find_apache_executable(platform_family)
       apache2 Mash.new
       apache2[:bin] = apache2_bin
-      apache2[:clients] = count_apache_clients(apache2_bin)
       apache2[:user] = find_apache_user(platform_family)
+      apache2[:clients] = count_apache_clients(apache2_bin, apache2[:user])
       if platform_family == "debian"
         apache2ctl_bin = find_apache2ctl()
       end

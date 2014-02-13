@@ -3,7 +3,7 @@ Ohai.plugin(:Lsyncd) do
 
   def find_lsyncd_bin
     unless @lsyncd_bin
-      so = shell_out("which lsyncd")
+      so = shell_out("/bin/bash -c 'command -v lsyncd'")
       lsyncd_bin = so.stdout.strip
     end
     return lsyncd_bin unless lsyncd_bin.empty?
