@@ -6,8 +6,28 @@ Ohai.plugin(:Apache2) do
     return @parsed_apache if @parsed_apache
     response = {}
     output = retrieve_apache_output(apache_command)
+    current_vhost = ''
     output[:stdout].lines do |line|
       case line
+      when /is a NameVirtualHost/
+        current_vhost = line.split[0]
+        response[:vhosts] ||= {}
+        response[:vhosts][current_vhost] = {}
+      when /$default\s/
+        response[:vhosts] ||= {}
+        response[:vhosts][current_vhost] ||= {}
+        response[:vhosts][current_vhost]['default'] = {
+          vhost: line.split[2],
+          conf: line.split[3].gsub(/\(|\)/, "")
+        }
+      when /$port\s/
+        response[:vhosts] ||= {}
+        response[:vhosts][current_vhost] ||= {}
+        response[:vhosts][current_vhost][line.split[3]] ||= {
+          vhost: line.split[3],
+          conf: line.split[4].gsub(/\(|\)/,''),
+          port: line.split[1]
+        }
       when /-D HTTPD_ROOT=["']?(.+?)["']?$/
         response[:config_path] = $1
       when /Server version:\s(.+?)?$/
