@@ -110,23 +110,23 @@ Ohai.plugin(:Apache2) do
 	max_clients = 0
 	inside_prefork_block = false
         File.open(apache2[:config_file],'r') do |apache2_config|
-	  for line in apache2_config
-	    if /<IfModule.*prefork.*/.match(line)
-	      inside_prefork_block = true
-	    end
-	    if inside_prefork_block && /^\s*MaxClients/.match(line)
-	      max_clients = line.split[1].to_i
-	      break
-	    end
+          for line in apache2_config
+            if /<IfModule.*prefork.*/.match(line)
+              inside_prefork_block = true
+            end
+            if inside_prefork_block && /^\s*MaxClients/.match(line)
+              max_clients = line.split[1].to_i
+              break
+            end
             if /<\\IfModule/.match(line)
-	      break
+              break
             end
           end
-	end
+        end
         if max_clients > 0
           apache2[:max_clients] = max_clients
-	else
-	  apache2[:max_clients] = "not found"
+        else
+          apache2[:max_clients] = "not found"
         end
       end
     end
