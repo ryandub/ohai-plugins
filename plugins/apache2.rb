@@ -107,8 +107,8 @@ Ohai.plugin(:Apache2) do
 
       case apache2[:mpm]
       when "prefork"
-	max_clients = 0
-	inside_prefork_block = false
+        max_clients = 0
+        inside_prefork_block = false
         File.open(apache2[:config_file],'r') do |apache2_config|
           for line in apache2_config
             if /<IfModule.*prefork.*/.match(line)
