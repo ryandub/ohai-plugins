@@ -1,6 +1,7 @@
 ---
 driver:
   name: vagrant
+  synced_folders: [["<%= File.expand_path(File.dirname(__FILE__)) %>/plugins", "/opt/ohai-plugins/plugins"]]
 driver_config:
   require_chef_omnibus: latest
 
