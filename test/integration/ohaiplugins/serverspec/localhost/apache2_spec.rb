@@ -52,5 +52,21 @@ describe "Apache2 Plugin" do
   it 'should report valid syntax' do
     expect(apache2['syntax_ok']).to eql(true)
   end
-
+  
+  it 'should retrieve the vhost configuration' do
+    vhost_hash = {
+      "*:80" => {
+        "default" => {
+          "vhost" => "my-site.localhost",
+          "conf" => "/etc/apache2/sites-enabled/my_site.conf:1"
+        },
+        "my-site.localhost" => {
+          "vhost" => "my-site.localhost",
+          "conf" => "/etc/apache2/sites-enabled/my_site.conf:1",
+          "port"=>"80"
+        }
+      }
+    }
+    expect(apache2['vhosts']).to eql(vhost_hash)
+  end
 end
