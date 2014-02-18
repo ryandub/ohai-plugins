@@ -138,12 +138,26 @@ Ohai.plugin(:Apache2) do
 
       case apache2[:mpm]
       when "prefork"
-        command = "grep -A8 -i mpm_prefork_module #{apache2[:config_file]}|grep MaxClients"
-        so = shell_out(command)
-        max_clients = so.stdout.strip
-        max_clients = (max_clients.split)[1].to_i
+        max_clients = 0
+        inside_prefork_block = false
+        File.open(apache2[:config_file],'r') do |apache2_config|
+          for line in apache2_config
+            if /<IfModule.*prefork.*/.match(line)
+              inside_prefork_block = true
+            end
+            if inside_prefork_block && /^\s*MaxClients/.match(line)
+              max_clients = line.split[1].to_i
+              break
+            end
+            if /<\\IfModule/.match(line)
+              break
+            end
+          end
+        end
         if max_clients > 0
           apache2[:max_clients] = max_clients
+        else
+          Ohai::Log.debug("Unable to parse max_clients from #{apache2[:config_file]}")
         end
       end
     end

@@ -46,6 +46,15 @@ RSpec.configure do |c|
   end
 end
 
+# Setup proper path for sudo environment
+path = ENV['PATH'].split(":")
+["/sbin", "/usr/sbin", "/usr/local/sbin"].each do |dir|
+  if !path.include?(dir)
+    path.insert(0, dir)
+  end
+end
+ENV['PATH'] = path.join(":")
+
 PLUGIN_PATH = "/opt/ohai-plugins/plugins"
 Ohai::Config[:plugin_path] << PLUGIN_PATH
 o = Ohai::System.new
