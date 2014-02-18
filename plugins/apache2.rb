@@ -6,36 +6,66 @@ Ohai.plugin(:Apache2) do
     return @parsed_apache if @parsed_apache
     response = {}
     output = retrieve_apache_output(apache_command)
+    current_vhost = ''
     output[:stdout].lines do |line|
       case line
-      when /-D HTTPD_ROOT=["']?(.+?)["']?$/
-        response[:config_path] = $1
-      when /Server version:\s(.+?)?$/
-        response[:version] = $1
-      when /Server MPM:\s(.+?)?$/
-        response[:mpm] = $1.strip.downcase
-      when /-D SERVER_CONFIG_FILE=["']?(.+?)["']?$/
-        response[:config_file] = $1.strip
+        when /-D HTTPD_ROOT=["']?(.+?)["']?$/
+          response[:config_path] = $1
+        when /Server version:\s(.+?)?$/
+          response[:version] = $1
+        when /Server MPM:\s(.+?)?$/
+          response[:mpm] = $1.strip.downcase
+        when /-D SERVER_CONFIG_FILE=["']?(.+?)["']?$/
+          response[:config_file] = $1.strip
       end
     end
 
     output[:stderr].lines do |line|
       case line
-      when /WARNING: Require MaxClients > 0, setting to\s(.+?)?$/
-        response[:max_clients] = $1.to_i
-      when /Syntax OK/
-        response[:syntax_ok] = true
-      when /Syntax error\s(.+?)?$/
-        response[:syntax_ok] = false
-        errors = $1.split(": ")
-        errors[0] = "Syntax error " + errors[0]
-        response[:syntax_errors] = errors
+        when /WARNING: Require MaxClients > 0, setting to\s(.+?)?$/
+          response[:max_clients] = $1.to_i
+        when /Syntax OK/
+          response[:syntax_ok] = true
+        when /Syntax error\s(.+?)?$/
+          response[:syntax_ok] = false
+          errors = $1.split(": ")
+          errors[0] = "Syntax error " + errors[0]
+          response[:syntax_errors] = errors
       end
     end
 
     return @parsed_apache = response
   end
-
+  def parse_vhosts(apache_command)
+    response = {}
+    current_vhost = ""
+    so = shell_out("#{apache_command} -S")
+    so.stdout.lines do |line|
+      case line
+        when /is a NameVirtualHost/
+          current_vhost = line.split[0]
+          response[:vhosts] ||= {}
+          response[:vhosts][current_vhost] = {}
+        when /^(\s)*default\s/
+          response[:vhosts] ||= {}
+          response[:vhosts][current_vhost] ||= {}
+          response[:vhosts][current_vhost]['default'] = {
+            vhost: line.split[2],
+            conf: line.split[3].gsub(/\(|\)/, "")
+          }
+        when /^(\s)*port\s/
+          response[:vhosts] ||= {}
+          response[:vhosts][current_vhost] ||= {}
+          response[:vhosts][current_vhost][line.split[3]] ||= {
+            vhost: line.split[3],
+            conf: line.split[4].gsub(/\(|\)/,''),
+            port: line.split[1]
+          }
+      end
+    end
+    return response
+  end
+  
   def retrieve_apache_output(apache_command)
     output = {}
     so = shell_out("#{apache_command} -V")
@@ -99,6 +129,7 @@ Ohai.plugin(:Apache2) do
         apache2ctl_bin = find_apache2ctl()
       end
       apache2.merge!(parse_apache_output(apache2ctl_bin || apache2_bin))
+      apache2.merge!(parse_vhosts(apache2ctl_bin || apache2_bin))
       if apache2[:config_path] == '"'
         apache2[:config_path] = File.dirname(apache2[:config_file])
       else

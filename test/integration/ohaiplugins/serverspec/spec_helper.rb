@@ -61,3 +61,4 @@ o = Ohai::System.new
 o.all_plugins
 
 OHAI = o.data
+puts OHAI
