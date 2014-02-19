@@ -8,9 +8,8 @@ Ohai.plugin(:Sysctl) do
     # right now only centos/linux tested
     cmd = "sysctl -A"
 
-    status, stdout, stderr = run_command(:command => cmd)
-    return "" if stdout.nil? || stdout.empty?
-    stdout.each_line do |line|
+    so = shell_out(cmd)
+    so.stdout.lines do |line|
       k,v = line.split(/=/).map {|i| i.strip!}
       sysctl[k] = v
     end
