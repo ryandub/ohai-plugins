@@ -58,11 +58,11 @@ describe "Apache2 Plugin" do
       "*:80" => {
         "default" => {
           "vhost" => "my-site.localhost",
-          "conf" => "/etc/apache2/sites-enabled/my_site.conf:1"
+          "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1"
         },
         "my-site.localhost" => {
           "vhost" => "my-site.localhost",
-          "conf" => "/etc/apache2/sites-enabled/my_site.conf:1",
+          "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
           "port"=>"80"
         }
       }

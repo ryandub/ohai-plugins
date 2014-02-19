@@ -39,7 +39,7 @@ Ohai.plugin(:Apache2) do
   def parse_vhosts(apache_command)
     response = {}
     current_vhost = ""
-    so = shell_out("#{apache_command} -S")
+    so = shell_out("#{apache_command} -S 2>&1")
     so.stdout.lines do |line|
       case line
         when /is a NameVirtualHost/
