@@ -49,23 +49,69 @@ Ohai.plugin(:Apache2) do
         when /^(\s)*default\s/
           response[:vhosts] ||= {}
           response[:vhosts][current_vhost] ||= {}
+          vhost = line.split[2]
+          conf = line.split[3].gsub(/\(|\)/, "")
+          configs = parse_vhost_config(conf.split(":")[0], conf.split(":")[1])
           response[:vhosts][current_vhost]['default'] = {
-            vhost: line.split[2],
-            conf: line.split[3].gsub(/\(|\)/, "")
+            vhost: vhost,
+            conf: conf,
+            docroot: configs['docroot'],
+            accesslogs: configs['access_logs'],
+            errorlog: configs['error_log']
           }
         when /^(\s)*port\s/
           response[:vhosts] ||= {}
           response[:vhosts][current_vhost] ||= {}
+          vhost = line.split[3]
+          conf = line.split[4].gsub(/\(|\)/,'')
+          port = line.split[1]
+          configs = parse_vhost_config(conf.split(":")[0], conf.split(":")[1])
           response[:vhosts][current_vhost][line.split[3]] ||= {
-            vhost: line.split[3],
-            conf: line.split[4].gsub(/\(|\)/,''),
-            port: line.split[1]
+            vhost: vhost,
+            conf: conf,
+            port: port,
+            docroot: configs['docroot'],
+            accesslogs: configs['access_logs'],
+            errorlog: configs['error_log']
           }
       end
     end
     return response
   end
-  
+
+  def parse_vhost_config(file, line_number)
+    docroot = nil
+    access_logs = []
+    error_log = nil
+    begin
+      f = File.open(file)
+      line_number.to_i.times{f.gets}
+      f.each do |line|
+        case line
+        when /^(?!#)(\s+)?DocumentRoot\s.*/
+          # If the line has comments after DocumentRoot,
+          # we don't want to return those.
+          line = strip_comments(line)
+          # Parse the docroot line and account for possible spaces and quotes.
+          docroot = line.lstrip.strip.split(" ")[1..-1].join(" ").to_s.gsub(/(\"|\')/, "")
+        when /^(?!#)(\s+)?ErrorLog\s.*/
+          line = strip_comments(line)
+          error_log = line.lstrip.strip.split(" ")[1..-1].join(" ").to_s.gsub(/(\"|\')/, "")
+        when /^(?!#)(\s+)?CustomLog\s.*/
+          line = strip_comments(line)
+          access_logs << line.lstrip.strip.split(" ")[1..-1].join(" ").to_s.gsub(/(\"|\')/, "")
+        when /^(?!#)(\s+)?<\/VirtualHost>\s.*/
+          break
+        end
+      end
+    ensure
+      # Make sure we close the file even if there is an error.
+      f.close
+    end
+    config = {"docroot" => docroot, "access_logs" => access_logs, "error_log" => error_log}
+    return config
+  end
+
   def retrieve_apache_output(apache_command)
     output = {}
     so = shell_out("#{apache_command} -V")
@@ -78,6 +124,15 @@ Ohai.plugin(:Apache2) do
       output[:stderr] = so.stderr
     end
     return output
+  end
+
+  def strip_comments(text)
+    re = Regexp.union(['#'])
+    if index = (text =~ re)
+      return text[0, index].rstrip
+    else
+      return text
+    end
   end
 
   def count_apache_clients(apache_command, apache_user)
