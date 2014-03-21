@@ -8,6 +8,7 @@ platform_version = OHAI['platform_version'].to_f
 describe "Apache2 Plugin" do
 
   if platform_family == 'debian'
+    apache_name = "apache2"
     apache_user = 'www-data'
     apache_bin = '/usr/sbin/apache2'
     apache_config_path = '/etc/apache2'
@@ -18,6 +19,7 @@ describe "Apache2 Plugin" do
       apache_mpm = 'worker'
     end
   elsif platform_family == 'rhel'
+    apache_name = "httpd"
     apache_user = 'apache'
     apache_bin = '/usr/sbin/httpd'
     apache_config_path = '/etc/httpd'
@@ -52,18 +54,24 @@ describe "Apache2 Plugin" do
   it 'should report valid syntax' do
     expect(apache2['syntax_ok']).to eql(true)
   end
-  
+
   it 'should retrieve the vhost configuration' do
     vhost_hash = {
       "*:80" => {
         "default" => {
           "vhost" => "my-site.localhost",
-          "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1"
+          "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
+          "docroot" => "/srv/vhost_sample",
+          "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
+          "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
         },
         "my-site.localhost" => {
           "vhost" => "my-site.localhost",
           "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
-          "port"=>"80"
+          "port" => "80",
+          "docroot" => "/srv/vhost_sample",
+          "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
+          "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
         }
       }
     }
