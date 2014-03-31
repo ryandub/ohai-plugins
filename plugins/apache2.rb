@@ -176,7 +176,7 @@ Ohai.plugin(:Apache2) do
 
   def go_estimate_RAM_per_prefork_child(platform_family, apache2_user)
     if platform_family == "debian"
-      so = shell_out("echo 5")
+      so = shell_out("ps -u #{apache2_user} -o pid= | xargs pmap -d | awk '/private/ {c+=1; sum+=$4} END {printf \"%.2f\", sum/c/1024}'")
       apache2_estimatedRAMperpreforkchild = so.stdout.strip
     elsif platform_family == "rhel"
       so = shell_out("ps -u #{apache2_user} -o pid= | xargs pmap -d | awk '/private/ {c+=1; sum+=$4} END {printf \"%.2f\", sum/c/1024}'")
