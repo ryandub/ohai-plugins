@@ -174,6 +174,20 @@ Ohai.plugin(:Apache2) do
     return so.stdout.strip
   end
 
+  def go_estimate_RAM_per_prefork_child(platform_family, apache2_user)
+    if platform_family == "debian"
+      so = shell_out("echo 20")
+      apache2_estimatedRAMperpreforkchild = so.stdout.strip
+    elsif platform_family == "rhel"
+      so = shell_out("echo 20")
+      apache2_estimatedRAMperpreforkchild = so.stdout.strip
+    else
+      raise(RuntimeError, "Apache test to estimate the avagerage RAM per prefork process cannot run on os type #{platform_family}")
+    end
+
+    return apache2_estimatedRAMperpreforkchild unless apache2_estimatedRAMperpreforkchild.empty?
+  end
+
   collect_data(:linux) do
     if apache2_bin = find_apache_executable(platform_family)
       apache2 Mash.new
@@ -193,6 +207,7 @@ Ohai.plugin(:Apache2) do
 
       case apache2[:mpm]
       when "prefork"
+        apache2[:estimatedRAMperpreforkchild] = go_estimate_RAM_per_prefork_child(platform_family, apache2[:user])
         max_clients = 0
         inside_prefork_block = false
         File.open(apache2[:config_file],'r') do |apache2_config|
