@@ -175,11 +175,12 @@ Ohai.plugin(:Apache2) do
   end
 
   def go_estimate_RAM_per_prefork_child(platform_family, apache2_user)
+    command = "ps -u #{apache2_user} -o pid= | xargs pmap -d | awk '/private/ {c+=1; sum+=$4} END {printf \"%.2f\", sum/c/1024}'"
     if platform_family == "debian"
-      so = shell_out("ps -u #{apache2_user} -o pid= | xargs pmap -d | awk '/private/ {c+=1; sum+=$4} END {printf \"%.2f\", sum/c/1024}'")
-      apache2_estimatedRAMperpreforkchild = so.stdout.strip
+      so = shell_out(command)
+      apache2_estimatedRAMperpreforkchild = so.stdout.strip.to_f
     elsif platform_family == "rhel"
-      so = shell_out("ps -u #{apache2_user} -o pid= | xargs pmap -d | awk '/private/ {c+=1; sum+=$4} END {printf \"%.2f\", sum/c/1024}'")
+      so = shell_out(command)
       apache2_estimatedRAMperpreforkchild = so.stdout.strip.to_f
     else
       raise(RuntimeError, "Apache RAM per prefork estimate cannot run on os type #{platform_family}")
