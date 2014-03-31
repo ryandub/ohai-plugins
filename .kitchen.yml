@@ -87,6 +87,7 @@ suites:
     - recipe[ohai_plugins_test::default]
     - recipe[ohai_plugins_test::postfix]
     - recipe[ohai_plugins_test::vhosts]
+    - recipe[ohai_plugins_test::wordpress]
   attributes:
     build_essential:
       compiletime: true

@@ -1,24 +1,30 @@
 DEPENDENCIES
   apache2
     git: git://github.com/onehealth-cookbooks/apache2.git
-    revision: bab6495f825d21371552599ed46a846fb4ad5267
+    revision: ff24894becf5cd3b48852f9d32e6154748810992
     ref: COOK-39
   build-essential
+  chef-unattended-upgrades
+    git: git://github.com/firstbanco/chef-unattended-upgrades.git
+    revision: 13b0b86386d87ee4d19ae62451ca7f37b9c87d02
   git
     git: git://github.com/opscode-cookbooks/git.git
     revision: b1bca76aaf3a3a2131744f17f6e5087e22fa3c40
+  hostsfile
+    git: git://github.com/customink-webops/hostsfile.git
+    revision: 495fd80ba7a3c306abe8c2585f6ec25bd937fc81
   mysql
-    git: git://github.com/ryandub/mysql.git
-    revision: 4432330b04ecfc17bd37f0d258dcda038025c6cb
-    ref: debian6
+    git: git://github.com/opscode-cookbooks/mysql.git
+    revision: 592abbab9bcbbba3642fc427f3be2bc25209de41
+    ref: v5.3.6
   ohai_plugins_test
     path: cookbooks/ohai_plugins_test
-  unattended-upgrades
-    git: git://github.com/firstbanco/chef-unattended-upgrades.git
-    revision: c0007662f54ce060e6297d5808cc563306180dfd
+  wordpress
+    git: git://github.com/opscode-cookbooks/wordpress.git
+    revision: 0b0595eafd998910cd3615754850fd8561347093
   yum
     git: git://github.com/opscode-cookbooks/yum.git
-    revision: a42b643c39f04960b9f91bffcb5012473abe206f
+    revision: e09d966bfb34717e96a5bda62c8bfde7dd5cd91d
   yum-cron
     git: git://github.com/poppen/yumcron-cookbook.git
     revision: 96c409a753eab402ab56de35a80a880b0bd129ce
@@ -27,11 +33,26 @@ DEPENDENCIES
     revision: 6ef99e1b09b367c11e4ac0542c472137bdb1f869
 
 GRAPH
-  apache2 (1.8.15)
-  apt (2.3.10)
-  build-essential (1.4.4)
+  apache2 (1.10.5)
+    freebsd (>= 0.0.0)
+    iptables (>= 0.0.0)
+    logrotate (>= 0.0.0)
+    pacman (>= 0.0.0)
+  apt (2.4.0)
+  aws (2.3.0)
+  build-essential (2.0.4)
+  chef-sugar (2.0.0)
+  chef-unattended-upgrades (1.0.1)
+    apt (>= 0.0.0)
   chef_handler (1.1.6)
+  database (2.2.0)
+    aws (>= 0.0.0)
+    mysql (>= 5.0.0)
+    mysql-chef_gem (>= 0.0.0)
+    postgresql (>= 1.0.0)
+    xfs (>= 0.0.0)
   dmg (2.2.0)
+  freebsd (0.1.4)
   git (4.0.3)
     build-essential (>= 0.0.0)
     dmg (>= 0.0.0)
@@ -39,23 +60,60 @@ GRAPH
     windows (>= 0.0.0)
     yum (~> 3.0)
     yum-epel (>= 0.0.0)
-  mysql (4.0.20)
-    build-essential (~> 1.4)
-    openssl (~> 1.1)
+  hostsfile (2.4.5)
+  iis (2.1.2)
+    windows (>= 1.2.6)
+  iptables (0.13.2)
+  logrotate (1.6.0)
+  mysql (5.3.6)
+    yum-mysql-community (>= 0.0.0)
+  mysql-chef_gem (0.0.2)
+    build-essential (>= 0.0.0)
+    mysql (>= 0.0.0)
   ohai_plugins_test (0.0.1)
     apache2 (>= 0.0.0)
     build-essential (>= 0.0.0)
     git (>= 0.0.0)
-  openssl (1.1.0)
+    hostsfile (>= 0.0.0)
+    wordpress (>= 0.0.0)
+  openssl (2.0.0)
+    chef-sugar (>= 0.0.0)
+  pacman (1.1.1)
+  php (1.4.6)
+    build-essential (>= 0.0.0)
+    iis (>= 0.0.0)
+    mysql (>= 0.0.0)
+    windows (>= 0.0.0)
+    xml (>= 0.0.0)
+    yum-epel (>= 0.0.0)
+  postgresql (3.4.1)
+    apt (>= 1.9.0)
+    build-essential (>= 0.0.0)
+    openssl (>= 0.0.0)
   runit (1.5.10)
     build-essential (>= 0.0.0)
     yum (~> 3.0)
     yum-epel (>= 0.0.0)
-  unattended-upgrades (1.0.0)
-    apt (>= 0.0.0)
-  windows (1.30.2)
+  tar (0.4.0)
+  windows (1.33.1)
     chef_handler (>= 0.0.0)
-  yum (3.2.1)
+  wordpress (2.1.6)
+    apache2 (>= 0.99.4)
+    build-essential (>= 0.0.0)
+    database (>= 1.6.0)
+    iis (>= 1.6.2)
+    mysql (>= 5.0.0)
+    mysql-chef_gem (>= 0.0.2)
+    openssl (>= 0.0.0)
+    php (>= 0.0.0)
+    tar (>= 0.3.1)
+  xfs (1.1.0)
+  xml (1.2.6)
+    build-essential (>= 0.0.0)
+    chef-sugar (>= 0.0.0)
+  yum (3.2.3)
   yum-cron (0.1.0)
   yum-epel (0.3.7)
     yum (~> 3.0)
+  yum-mysql-community (0.1.10)
+    yum (>= 3.0)
