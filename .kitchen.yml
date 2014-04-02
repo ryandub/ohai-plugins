@@ -99,3 +99,5 @@ suites:
       ref: <%= ENV['OHAI_PLUGINS_VERSION'] || "HEAD" %>
       ohai:
         ref: <%= ENV['OHAI_VERSION'] || "HEAD" %>
+    wordpress:
+      server_name: wordpress.example.com

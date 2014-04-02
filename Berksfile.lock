@@ -20,8 +20,9 @@ DEPENDENCIES
   ohai_plugins_test
     path: cookbooks/ohai_plugins_test
   wordpress
-    git: git://github.com/opscode-cookbooks/wordpress.git
-    revision: 0b0595eafd998910cd3615754850fd8561347093
+    git: git://github.com/ryandub/wordpress.git
+    revision: ac534c0b5981f515f483a13195995f8266c6b2af
+    ref: servern
   yum
     git: git://github.com/opscode-cookbooks/yum.git
     revision: e09d966bfb34717e96a5bda62c8bfde7dd5cd91d
@@ -94,19 +95,16 @@ GRAPH
     build-essential (>= 0.0.0)
     yum (~> 3.0)
     yum-epel (>= 0.0.0)
-  tar (0.4.0)
   windows (1.33.1)
     chef_handler (>= 0.0.0)
-  wordpress (2.1.6)
+  wordpress (2.1.1)
     apache2 (>= 0.99.4)
     build-essential (>= 0.0.0)
     database (>= 1.6.0)
     iis (>= 1.6.2)
-    mysql (>= 5.0.0)
-    mysql-chef_gem (>= 0.0.2)
+    mysql (>= 1.0.5)
     openssl (>= 0.0.0)
     php (>= 0.0.0)
-    tar (>= 0.3.1)
   xfs (1.1.0)
   xml (1.2.6)
     build-essential (>= 0.0.0)
