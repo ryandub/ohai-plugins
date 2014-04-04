@@ -1,5 +1,5 @@
 Ohai.plugin(:Date) do
-  provides "date"
+  provides "datetimeinfo"
 
   collect_data(:linux) do
     datetimeinfo Mash.new
