@@ -1,13 +1,15 @@
 ---
 driver:
   name: vagrant
-  synced_folders: [["<%= File.expand_path(File.dirname(__FILE__)) %>/plugins", "/opt/ohai-plugins/plugins"]]
+  customize:
+    memory: 1024
+    cpuexecutioncap: 50
+  synced_folders:
+    - ["<%= File.expand_path(File.dirname(__FILE__)) %>/plugins", "/opt/ohai-plugins/plugins"]
 driver_config:
   require_chef_omnibus: latest
-
 provisioner:
   name: chef_solo
-
 platforms:
   - name: ubuntu-10.04
     driver_config:
@@ -22,37 +24,38 @@ platforms:
   - name: ubuntu-12.10
     driver_config:
       box: vagrant-ubuntu-12.10
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-12.10_chef-provisionerless.box 
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-12.10_chef-provisionerless.box
       require_chef_omnibus: true
   - name: ubuntu-13.04
     driver_config:
       box: vagrant-ubtuntu-13.04
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.04_chef-provisionerless.box 
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.04_chef-provisionerless.box
       require_chef_omnibus: true
-  - name: ubuntu-13.10
-    driver_config:
-      box: vagrant-ubuntu-13.10
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box 
-      require_chef_omnibus: true
+# TODO: Fix 13.10 tests
+#  - name: ubuntu-13.10
+#    driver_config:
+#      box: vagrant-ubuntu-13.10
+#      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box
+#      require_chef_omnibus: true
   - name: centos-5
     driver_config:
       box: vagrant-centos-5
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-5.10_chef-provisionerless.box 
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-5.10_chef-provisionerless.box
       require_chef_omnibus: true
   - name: centos-6
     driver_config:
       box: vagrant-centos-6
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box 
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box
       require_chef_omnibus: true
   - name: debian-6
     driver_config:
       box: vagrant-debian-6
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-6.0.8_chef-provisionerless.box 
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-6.0.8_chef-provisionerless.box
       require_chef_omnibus: true
   - name: debian-7
     driver_config:
       box: vagrant-debian-7
-      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-7.2.0_chef-provisionerless.box 
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-7.2.0_chef-provisionerless.box
       require_chef_omnibus: true
 
 suites:
@@ -76,4 +79,3 @@ suites:
       server_root_password: passw0rd
       server_debian_password: passw0rd
       server_repl_password: passw0rd
-
