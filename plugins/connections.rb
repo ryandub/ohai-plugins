@@ -87,7 +87,7 @@ Ohai.plugin(:Connections) do
       lines.each do |line|
         line_parts = line.split
         address = line_parts[1][1..-2]
-        unless !remotes.include? address
+        unless remotes.include? address
           Ohai::Log.debug("Found #{address} in arp cache")
           active[address] ||= []
         end
