@@ -6,12 +6,12 @@
 # Inbound connections are assumed based on LISTENing ports and
 # are not included in the output.
 #
-require "resolv"
-require "set"
-require "socket"
+require 'resolv'
+require 'set'
+require 'socket'
 
 Ohai.plugin(:Connections) do
-  provides "connections"
+  provides 'connections'
 
   collect_data(:linux) do
     connections Mash.new           # This contains the output we will return
@@ -29,34 +29,34 @@ Ohai.plugin(:Connections) do
     Ohai::Log.debug("Local IPv6 addresses: #{local_ipv6_addresses}")
 
     # Get connections from netstat
-    output = shell_out("netstat -naten")
+    output = shell_out('netstat -naten')
     if output
       lines = output.stdout.split(/\n/).reject(&:empty?)[2..-1]
 
       if lines
-        for line in lines
-          line_parts = line.split()
+        lines.each do |line|
+          line_parts = line.split
 
-          local_parts = line_parts[3].split(":")
+          local_parts = line_parts[3].split(':')
           local_address = local_parts[0..-2].join(':')
           local_port = local_parts[-1].to_i
 
-          foreign_parts = line_parts[4].split(":")
+          foreign_parts = line_parts[4].split(':')
           foreign_address = foreign_parts[0..-2].join(':')
           foreign_port = foreign_parts[-1].to_i
 
           state = line_parts[5]
 
-          if state == "LISTEN"
-            if local_address == "0.0.0.0"
+          if state == 'LISTEN'
+            if local_address == '0.0.0.0'
               Ohai::Log.debug("IPv4 wildcard listener on port #{local_port}")
               ipv4_wildcard_ports.add(local_port)
-            elsif local_address == "::"
+            elsif local_address == '::'
               Ohai::Log.debug("IPv6 wildcard listener on port #{local_port}")
               ipv6_wildcard_ports.add(local_port)
             else
               Ohai::Log.debug("Listener on port #{local_port} bound to #{local_address}")
-              listeners.add(local_parts.join(":"))
+              listeners.add(local_parts.join(':'))
             end
           elsif !!(local_address =~ Resolv::IPv4::Regex) && ipv4_wildcard_ports.include?(local_port)
             remotes.add(foreign_address)
@@ -78,16 +78,16 @@ Ohai.plugin(:Connections) do
     end
 
     # Get connections from arp cache
-    output = shell_out("arp -an")
+    output = shell_out('arp -an')
     if output
       lines = output.stdout.split(/\n/).reject(&:empty?)
     end
 
     if lines
-      for line in lines
-        line_parts = line.split()
+      lines.each do |line|
+        line_parts = line.split
         address = line_parts[1][1..-2]
-        if not remotes.include? address
+        unless remotes.include? address
           Ohai::Log.debug("Found #{address} in arp cache")
           active[address] ||= []
         end

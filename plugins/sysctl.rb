@@ -1,3 +1,5 @@
+# Encoding: utf-8
+
 Ohai.plugin(:Sysctl) do
   provides 'sysctl'
 
@@ -6,11 +8,11 @@ Ohai.plugin(:Sysctl) do
 
     # platform detection should go here
     # right now only centos/linux tested
-    cmd = "sysctl -A"
+    cmd = 'sysctl -A'
 
     so = shell_out(cmd)
     so.stdout.lines do |line|
-      k,v = line.split(/=/).map {|i| i.strip!}
+      k, v = line.split(/=/).map { |i| i.strip! }
       sysctl[k] = v
     end
   end
