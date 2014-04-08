@@ -1,3 +1,4 @@
+# Encoding: utf-8
 include_recipe "ohai_plugins_test::vhosts"
 
 node.override['wordpress']['parent_dir'] = '/srv/wordpress_sample'

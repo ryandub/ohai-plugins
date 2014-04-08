@@ -1,3 +1,4 @@
+# Encoding: utf-8
 Ohai.plugin(:Wordpress) do
   depends 'webapps'
   depends 'apache2'
@@ -7,14 +8,14 @@ Ohai.plugin(:Wordpress) do
   def get_docroots
     docroots = {}
     unless apache2['vhosts'].empty?
-      #build hash of docroots to iterate
+      # Build hash of docroots to iterate
       apache2['vhosts'].each do |vhost_name, vhost|
         vhost.each do |site_name, site|
           docroots[site_name] = site['docroot']
         end
       end
     end
-    return docroots if !docroots.empty?
+    return docroots unless docroots.empty?
   end
 
   def get_version(path)
@@ -24,7 +25,7 @@ Ohai.plugin(:Wordpress) do
     begin
       file.each_line do |line|
         if /wp_version =/.match(line)
-          version = line.split('=')[1].gsub(/\'|\;/, "").strip
+          version = line.split('=')[1].gsub(/\'|\;/, '').strip
           break
         end
       end
@@ -36,9 +37,9 @@ Ohai.plugin(:Wordpress) do
 
   def find_plugins(path)
     plugins = {}
-    dirs = Dir.glob(File.join(File.dirname(path), '/wp-content/plugins/*')).select {|f| File.directory? f}
+    dirs = Dir.glob(File.join(File.dirname(path), '/wp-content/plugins/*')).select { |f| File.directory? f }
     dirs.each do |dir|
-      files = Dir.glob(File.join(dir, '*.php')).select {|f| !File.directory? f}
+      files = Dir.glob(File.join(dir, '*.php')).select { |f| !File.directory? f }
       # Read php files to find plugin metadata. Stop when data is found.
       files.each do |php_file|
         begin
@@ -62,43 +63,40 @@ Ohai.plugin(:Wordpress) do
         ensure
           file.close if file
         end
-        if files.empty?
-          break
-        end
+        break if files.empty?
       end
     end
-    return plugins if !plugins.empty?
+    return plugins unless plugins.empty?
   end
 
   def find_wordpress(docroots)
     require 'find'
     found = {}
     docroots.each do |site_name, site_path|
-      excludes = ['.git', 'images', 'includes', 'lib', 'wp-content', 'wp-includes']
+      excludes = ['.git', '.svn', 'images', 'includes', 'lib', 'wp-content',
+                  'wp-includes']
+      max_depth = site_path.scan(/\//).count + 3
       Find.find(site_path) do |path|
-        if excludes.include?(File.basename(path))
-          Find.prune
-        end
+        # Do not traverse excluded directories and stop
+        # once max_depth is reached.
+        Find.prune if excludes.include?(File.basename(path))
+        Find.prune if path.scan(/\//).count > max_depth
         if path.include?('wp-config.php')
           found[site_name] = {}
           found[site_name]['path'] = path
           found[site_name]['version'] = get_version(path)
           plugins = find_plugins(path)
-          if plugins
-            found[site_name]['plugins'] = plugins
-          end
+          found[site_name]['plugins'] = plugins if plugins
           break
         end
       end
     end
-    return found if !found.empty?
+    return found unless found.empty?
   end
 
   collect_data do
     docroots = get_docroots
     found = find_wordpress(docroots) unless docroots.nil?
-    if found
-      webapps['wordpress'] = found
-    end
+    webapps['wordpress'] = found unless found.nil?
   end
 end
