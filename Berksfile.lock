@@ -26,6 +26,11 @@
       "git": "git://github.com/opscode-cookbooks/yum.git",
       "ref": "3799e551ac5441e0aacf1893de3b5fa24fe8da68"
     },
+    "yum-cron": {
+      "locked_version": "0.1.0",
+      "git": "git://github.com/poppen/yumcron-cookbook.git",
+      "ref": "96c409a753eab402ab56de35a80a880b0bd129ce"
+    },
     "yum-epel": {
       "locked_version": "0.2.1",
       "git": "git://github.com/opscode-cookbooks/yum-epel.git",

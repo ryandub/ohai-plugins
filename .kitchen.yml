@@ -50,11 +50,15 @@ platforms:
       box: vagrant-centos-5
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-5.10_chef-provisionerless.box
       require_chef_omnibus: true
+    run_list:
+    - recipe[yum-cron]
   - name: centos-6
     driver_config:
       box: vagrant-centos-6
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box
       require_chef_omnibus: true
+    run_list:
+    - recipe[yum-cron]
   - name: debian-6
     driver_config:
       box: vagrant-debian-6
