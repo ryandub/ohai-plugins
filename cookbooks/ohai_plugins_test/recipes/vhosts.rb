@@ -1,4 +1,5 @@
 include_recipe "apache2"
+include_recipe "apache2::mod_ssl"
 
 directory "/srv/vhost_sample" do
   owner 'root'
