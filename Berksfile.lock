@@ -31,11 +31,16 @@
       "git": "git://github.com/opscode-cookbooks/yum-epel.git",
       "ref": "549f9a479d801bfb48ec8d81b03d1b6b28e7e7a0"
     },
+    "unattended-upgrades": {
+      "locked_version": "1.0.0",
+      "git": "git://github.com/firstbanco/chef-unattended-upgrades.git",
+      "ref": "24cf40f5743fac8e7814e58cc8e3dde2f1ca2de9"
+    },
     "openssl": {
       "locked_version": "1.1.0"
     },
     "dmg": {
-      "locked_version": "2.1.4"
+      "locked_version": "1.1.0"
     },
     "windows": {
       "locked_version": "1.12.8"
@@ -45,6 +50,9 @@
     },
     "runit": {
       "locked_version": "1.5.8"
+    },
+    "apt": {
+      "locked_version": "2.3.8"
     }
   }
 }
