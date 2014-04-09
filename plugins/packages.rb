@@ -14,7 +14,7 @@ Ohai.plugin(:Packages) do
         packages[pkg[0]] = {"version" => pkg[1]}
       end
     elsif platform_family.eql?("rhel")
-      so = shell_out("rpm -qa --queryformat '%{NAME}: %{VERSION}\n'")
+      so = shell_out("rpm -qa --queryformat '%{NAME}: %{VERSION}-%{RELEASE}\n'")
       pkgs = so.stdout.split("\n")
 
       pkgs.each do |pkg|
