@@ -9,10 +9,6 @@ describe 'Processes Plugin' do
     expect(processes).to be_a(Mash)
   end
 
-  it 'should have init as pid 1' do
-    expect(processes['1']['command']).to eql('/sbin/init')
-  end
-
   it 'should report process user' do
     expect(processes['1']).to include('user')
   end
