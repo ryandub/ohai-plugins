@@ -25,8 +25,4 @@ describe 'Login Configuration Plugin' do
     expect(login['PASS_WARN_AGE']).to eql('7')
   end
 
-  it 'should have ENCRYPT_METHOD of SHA512' do
-    expect(login['ENCRYPT_METHOD']).to eql('SHA512')
-  end
-
 end
