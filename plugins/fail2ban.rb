@@ -5,7 +5,7 @@ Ohai.plugin(:Fail2ban) do
     so = shell_out('fail2ban-client get logtarget')
     logline = so.stdout.split("\n")[1]
     loglocation = logline.split(' ')[1]
-    Ohai::Log.debug(loglocation)
+    Ohai::Log.debug("fail2ban log location: #{loglocation}")
 
     if loglocation == 'SYSLOG'
       return '/var/log/messages' if File.exist?('/var/log/messages')
@@ -19,10 +19,10 @@ Ohai.plugin(:Fail2ban) do
   def get_jails()
     so = shell_out('fail2ban-client status')
     lines = so.stdout.split("\n")
-    Ohai::Log.debug(lines)
+    Ohai::Log.debug("fail2ban status: #{lines}")
     comma_jails = lines[2].split("\t\t")[1]
     list_of_jails = [*comma_jails.split(", ")]
-    Ohai::Log.debug(list_of_jails)
+    Ohai::Log.debug("fail2ban jails: #{list_of_jails}")
     return list_of_jails
   end
 
@@ -31,7 +31,7 @@ Ohai.plugin(:Fail2ban) do
 
     so = shell_out("grep -e 'Ban\\|Unban' #{logfile}")
     lines = so.stdout.split("\n")
-    Ohai::Log.debug(lines)
+    Ohai::Log.debug("fail2ban ban lines: #{lines}")
 
     return lines
   end
