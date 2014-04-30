@@ -3,6 +3,10 @@ require 'spec_helper'
 fail2ban = OHAI['fail2ban']
 
 describe 'fail2ban Plugin' do
+  it 'should be an Mash' do
+    expect(fail2ban).to be_a(Mash)
+  end
+
   it 'should find lines in the fail2ban log' do
     expect(fail2ban['activity'][0]).to eql('2014-04-30 10:46:24,006 fail2ban.actions: WARNING [ssh] Ban 1.1.1.1')
   end
