@@ -1,3 +1,4 @@
+source 'https://api.berkshelf.com'
 
 cookbook 'build-essential'
 cookbook 'ohai_plugins_test', :path => 'cookbooks/ohai_plugins_test'
