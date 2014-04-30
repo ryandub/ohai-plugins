@@ -4,7 +4,7 @@ iptables = OHAI['iptables']
 
 describe 'Iptables Plugin' do
 	
-  it 'should be an Mash' do
+  it 'should be a Mash' do
     expect(iptables).to be_a(Mash)
   end
 

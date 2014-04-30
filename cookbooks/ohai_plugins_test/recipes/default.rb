@@ -25,14 +25,10 @@ bash "make_vagrant_my_cnf" do
   only_if { File.exist?("/home/vagrant") }
 end
 
-cron_d 'echo-hello' do
-  minute  '0'
-  hour    '0'
-  day     '1'
-  month   '3'
-  weekday '0'
-  command 'echo hello'
-  user    'root'
+bash "make cronjob" do
+  code <<-EOH
+  echo -e "0 0 1 3 0 root echo hello" > /var/spool/cron/crontabs/root
+  EOH
 end
 
 package 'fail2ban'
