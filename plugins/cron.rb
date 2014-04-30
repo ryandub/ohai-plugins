@@ -15,7 +15,6 @@ Ohai.plugin(:Crontab) do
           next
         when /^@reboot/, /^@hourly/, /^@daily/, /^@monthly/, /^@weekly/
           info = line.split(" ")
-          Ohai::Log.debug("************* INFO #{info}")
           length = info.count - 1
           response[name][:time] = info[0]
           response[name][:command] = info[1..length].join(" ")
