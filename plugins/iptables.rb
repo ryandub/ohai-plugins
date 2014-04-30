@@ -3,7 +3,6 @@
 Ohai.plugin(:Iptables) do
 	provides 'iptables'
 
-
 	collect_data(:linux) do
 		iptables Mash.new # Creating a mash of present IPTables rules
 		so = shell_out("sudo iptables -S")
@@ -11,5 +10,4 @@ Ohai.plugin(:Iptables) do
 			iptables[i] = line.strip
 		end
 	end
-
 end
