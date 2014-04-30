@@ -24,3 +24,13 @@ bash "make_vagrant_my_cnf" do
   EOH
   only_if { File.exists?("/home/vagrant") }
 end
+
+cron_d 'echo-hello' do
+  minute  0
+  hour    0
+  day     1
+  month   3
+  weekday 0
+  command 'echo hello'
+  user    'root'
+end

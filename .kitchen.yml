@@ -65,14 +65,14 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-6.0.8_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
-    - recipe[unattended-upgrades]    
+    - recipe[unattended-upgrades]
   - name: debian-7
     driver_config:
       box: vagrant-debian-7
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-7.2.0_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
-    - recipe[unattended-upgrades]    
+    - recipe[unattended-upgrades]
 
 suites:
 - name: ohaiplugins
@@ -82,6 +82,7 @@ suites:
     - recipe[apache2]
     - recipe[mysql::client]
     - recipe[mysql::server]
+    - recipe[cron]
     - recipe[ohai_plugins_test::default]
     - recipe[ohai_plugins_test::vhosts]
   attributes:
