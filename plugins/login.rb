@@ -30,6 +30,9 @@ Ohai.plugin(:Login) do
 
   collect_data(:linux) do
     defs = parse_login_defs
-    etc['login.defs'] = defs unless defs.empty?
+    unless defs.empty?
+      etc Mash.new unless etc
+      etc['login.defs'] = defs unless defs.empty?
+    end
   end
 end
