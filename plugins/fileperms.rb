@@ -27,7 +27,8 @@ Ohai.plugin(:Permissions) do
       '/etc/cron.d',
       '/etc/ssh/sshd_config',
       '/etc/gshadow',
-      '/etc/group'
+      '/etc/group',
+      '/etc/login.defs'
     ]
     permissions Mash.new
     file.each do |filename|
