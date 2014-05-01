@@ -25,10 +25,19 @@ bash "make_vagrant_my_cnf" do
   only_if { File.exist?("/home/vagrant") }
 end
 
-bash "make cronjob" do
-  code <<-EOH
-  echo -e "0 0 1 3 0 root echo hello" > /var/spool/cron/crontabs/root
-  EOH
+case node['platform_family']
+when 'rhel'
+  bash "make cronjob" do
+    code <<-EOH
+    echo -e "0 0 1 3 0 root echo hello" > /var/spool/cron/root
+    EOH
+  end
+when 'debian'
+  bash "make cronjob" do
+    code <<-EOH
+    echo -e "0 0 1 3 0 root echo hello" > /var/spool/cron/crontabs/root
+    EOH
+  end
 end
 
 package 'fail2ban'
@@ -37,7 +46,7 @@ service 'fail2ban' do
   action :start
 end
 
-case node[:platform_family]
+case node['platform_family']
 when 'rhel'
   logfile = '/var/log/messages'
 when 'debian'

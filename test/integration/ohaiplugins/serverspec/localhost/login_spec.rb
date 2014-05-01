@@ -1,7 +1,7 @@
 # Encoding: utf-8
 require 'spec_helper'
 
-login = OHAI['etc']['login']
+login = OHAI['etc']['login.defs']
 
 describe 'Login Configuration Plugin' do
 
