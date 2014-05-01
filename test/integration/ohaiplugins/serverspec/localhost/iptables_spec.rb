@@ -1,16 +1,15 @@
 require 'spec_helper'
 
-iptables = OHAI['iptables']
+ip_tables = OHAI['ip_tables']
 
-describe 'Iptables Plugin' do
-	
+describe 'Ip_tables Plugin' do
+
   it 'should be a Mash' do
-    expect(iptables).to be_a(Mash)
+    expect(ip_tables).to be_a(Mash)
   end
 
   it 'should contain rules' do
-    expect(iptables[0]).not_to be_empty
+    expect(ip_tables[0]).not_to be_empty
   end
 
 end
-
