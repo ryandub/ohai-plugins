@@ -82,7 +82,6 @@ suites:
     - recipe[apache2]
     - recipe[mysql::client]
     - recipe[mysql::server]
-    - recipe[cron]
     - recipe[ohai_plugins_test::default]
     - recipe[ohai_plugins_test::vhosts]
   attributes:
