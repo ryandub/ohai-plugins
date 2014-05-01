@@ -3,7 +3,7 @@
 
 Ohai.plugin(:Login) do
   depends 'etc'
-  provides 'etc/login'
+  provides 'etc/login.defs'
 
   def parse_login_defs
     defs = {}
@@ -30,6 +30,6 @@ Ohai.plugin(:Login) do
 
   collect_data(:linux) do
     defs = parse_login_defs
-    etc['login'] = defs unless defs.empty?
+    etc['login.defs'] = defs unless defs.empty?
   end
 end

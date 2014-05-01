@@ -1,7 +1,7 @@
 # Encoding: utf-8
 require 'spec_helper'
 
-login = OHAI['etc']['login']
+login = OHAI['etc']['login.defs']
 
 describe 'Login Configuration Plugin' do
 
@@ -23,10 +23,6 @@ describe 'Login Configuration Plugin' do
 
   it 'should have PASS_WARN_AGE value of 7' do
     expect(login['PASS_WARN_AGE']).to eql('7')
-  end
-
-  it 'should have ENCRYPT_METHOD of SHA512' do
-    expect(login['ENCRYPT_METHOD']).to eql('SHA512')
   end
 
 end

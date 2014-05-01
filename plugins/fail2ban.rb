@@ -37,9 +37,14 @@ Ohai.plugin(:Fail2ban) do
   end
 
   collect_data(:linux) do
-    fail2ban Mash.new
+    activity = get_activity()
+    jails = get_jails()
 
-    fail2ban[:activity] = get_activity()
-    fail2ban[:jails] = get_jails()
+    unless activity.empty? and jails.empty?
+      fail2ban Mash.new
+    end
+
+    fail2ban[:activity] = activity unless activity.empty?
+    fail2ban[:jails] = jails unless jails.empty?
   end
 end
