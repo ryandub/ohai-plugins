@@ -40,7 +40,9 @@ Ohai.plugin(:Pam) do
 
   collect_data(:linux) do
     pam = parse_pam_files
-    etc['pam'] = pam unless pam.empty?
+    unless pam.empty?
+      etc Mash.new unless etc
+      etc['pam'] = pam unless pam.empty?
+    end
   end
 end
-
