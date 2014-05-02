@@ -1,3 +1,6 @@
+execute "use_ipv4" do
+  command "echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6"
+end
 
 git "/opt/ohai-plugins" do
   repository node[:ohai_plugins_test][:repo]
@@ -40,22 +43,4 @@ when 'debian'
   end
 end
 
-package 'fail2ban'
-
-service 'fail2ban' do
-  action :start
-end
-
-case node['platform_family']
-when 'rhel'
-  logfile = '/var/log/messages'
-when 'debian'
-  logfile = '/var/log/fail2ban.log'
-end
-
-bash "add_fail2ban_lines" do
-  code <<-EOH
-  echo -e '2014-04-30 10:46:24,006 fail2ban.actions: WARNING [ssh] Ban 1.1.1.1\n2014-04-30 10:56:24,731 fail2ban.actions: WARNING [ssh] Unban 2.2.2.2\n' >> #{logfile}
-  EOH
-  only_if { File.exist?(logfile) }
-end
+include_recipe "ohai_plugins_test::fail2ban"
