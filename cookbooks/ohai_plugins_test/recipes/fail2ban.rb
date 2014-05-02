@@ -14,12 +14,12 @@ end
 package 'fail2ban'
 
 service 'fail2ban' do
-          action :start
+    action :start
 end
 
 bash "add_fail2ban_lines" do
-          code <<-EOH
-            echo -e '2014-04-30 10:46:24,006 fail2ban.actions: WARNING [ssh] Ban 1.1.1.1\n2014-04-30 10:56:24,731 fail2ban.actions: WARNING [ssh] Unban 1.1.1.1\n2014-04-30 11:46:24,006 fail2ban.actions: WARNING [ssh] Ban 2.2.2.2\n' >> #{logfile}
-              EOH
-                only_if { File.exist?(logfile) }
+    code <<-EOH
+    echo -e '2014-04-30 10:46:24,006 fail2ban.actions: WARNING [ssh] Ban 1.1.1.1\n2014-04-30 10:56:24,731 fail2ban.actions: WARNING [ssh] Unban 1.1.1.1\n2014-04-30 11:46:24,006 fail2ban.actions: WARNING [ssh] Ban 2.2.2.2\n' >> #{logfile}
+    EOH
+    only_if { File.exist?(logfile) }
 end
