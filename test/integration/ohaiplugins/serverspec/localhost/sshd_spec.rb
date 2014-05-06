@@ -4,6 +4,17 @@ require 'spec_helper'
 sshd = OHAI['sshd']
 platform_family = OHAI['platform_family']
 platform_version = OHAI['platform_version'].to_f
+if OHAI['passwd'].key?('vagrant')
+  vagrant = true
+else
+  vagrant = false
+end
+
+if platform_family == 'debian' && platform_version >= 14.04 && vagrant
+  permitrootlogin = 'without-password'
+else
+  permitrootlogin = 'yes'
+end
 
 unless platform_family == 'rhel' && platform_version < 6
 
@@ -26,7 +37,7 @@ unless platform_family == 'rhel' && platform_version < 6
     end
 
     it 'should have permitrootlogin value of "yes"' do
-      expect(sshd['permitrootlogin']).to eql('yes')
+      expect(sshd['permitrootlogin']).to eql(permitrootlogin)
     end
 
     it 'should have x11forwarding value of "yes"' do

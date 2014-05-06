@@ -10,10 +10,22 @@ driver_config:
   rackspace_region: <%= ENV['RS_REGION'] %>
 
 platforms:
-# TODO: Fix 13.10 tests
-#- name: ubuntu-1310
-#  driver_config:
-#    image_id: df27d481-63a5-40ca-8920-3d132ed643d9
+- name: ubuntu-1404
+  driver_config:
+    image_id: bb02b1a3-bc77-4d17-ab5b-421d89850fca
+  run_list:
+  - recipe[unattended-upgrades]
+  attributes:
+    apache:
+      version: "2.4"
+- name: ubuntu-1310
+  driver_config:
+    image_id: df27d481-63a5-40ca-8920-3d132ed643d9
+  run_list:
+  - recipe[unattended-upgrades]
+  attributes:
+    apache:
+      version: "2.4"
 - name: ubuntu-1304
   driver_config:
     image_id: 4b54f5a0-137f-4751-8e7c-fe707185e531
@@ -27,11 +39,6 @@ platforms:
 - name: ubuntu-1204
   driver_config:
     image_id: 80fbcb55-b206-41f9-9bc2-2dd7aac6c061
-  run_list:
-  - recipe[unattended-upgrades]
-- name: ubuntu-1110
-  driver_config:
-    image_id: 3afe97b2-26dc-49c5-a2cc-a2fc8d80c001
   run_list:
   - recipe[unattended-upgrades]
 - name: ubuntu-1004
