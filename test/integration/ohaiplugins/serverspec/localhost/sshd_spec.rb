@@ -4,7 +4,7 @@ require 'spec_helper'
 sshd = OHAI['sshd']
 platform_family = OHAI['platform_family']
 platform_version = OHAI['platform_version'].to_f
-if OHAI['passwd'].key?('vagrant')
+if OHAI['etc']['passwd'].key?('vagrant')
   vagrant = true
 else
   vagrant = false
