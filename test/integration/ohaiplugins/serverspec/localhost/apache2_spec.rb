@@ -4,6 +4,8 @@ apache2 = OHAI['apache2']
 platform = OHAI['platform']
 platform_family = OHAI['platform_family']
 platform_version = OHAI['platform_version'].to_f
+fqdn = OHAI['fqdn']
+docroot = '/var/www'
 
 describe "Apache2 Plugin" do
 
@@ -14,9 +16,13 @@ describe "Apache2 Plugin" do
     apache_config_path = '/etc/apache2'
     apache_config_file = '/etc/apache2/apache2.conf'
     if platform == 'ubuntu' and platform_version >= 13.10
-      apache_mpm = 'event'
+      apache_mpm = 'prefork'
+      if platform_version >= 14.04
+        docroot = '/var/www/html'
+      end
     else
       apache_mpm = 'worker'
+      docroot = '/var/www'
     end
   elsif platform_family == 'rhel'
     apache_name = "httpd"
@@ -56,25 +62,53 @@ describe "Apache2 Plugin" do
   end
 
   it 'should retrieve the vhost configuration' do
-    vhost_hash = {
-      "*:80" => {
-        "default" => {
-          "vhost" => "my-site.localhost",
-          "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
-          "docroot" => "/srv/vhost_sample",
-          "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
-          "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
-        },
-        "my-site.localhost" => {
-          "vhost" => "my-site.localhost",
-          "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
-          "port" => "80",
-          "docroot" => "/srv/vhost_sample",
-          "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
-          "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+    if platform_version.to_f >= 13.10
+      vhost_hash = {
+        "*:80" => {
+          "default" => {
+            "vhost" => fqdn, 
+            "conf" => "/etc/apache2/sites-enabled/000-default.conf:1",
+            "docroot" => docroot,
+            "accesslogs" => ["${APACHE_LOG_DIR}/access.log combined"],
+            "errorlog" => "${APACHE_LOG_DIR}/error.log"},
+          "#{fqdn}" => {
+            "vhost"=> fqdn,
+            "conf"=>"/etc/apache2/sites-enabled/000-default.conf:1",
+            "port"=>"80",
+            "docroot" => docroot,
+            "accesslogs" => ["${APACHE_LOG_DIR}/access.log combined"],
+            "errorlog" => "${APACHE_LOG_DIR}/error.log"},
+          "my-site.localhost" => {
+            "vhost" => "my-site.localhost",
+            "conf"=>"/etc/apache2/sites-enabled/my_site.conf:1",
+            "port" => "80",
+            "docroot" => "/srv/vhost_sample",
+            "accesslogs" => ["/var/log/apache2/my_site-access.log combined"],
+            "errorlog"=>"/var/log/apache2/my_site-error.log"
+          }
         }
       }
-    }
+    else
+      vhost_hash = {
+        "*:80" => {
+          "default" => {
+            "vhost" => "my-site.localhost",
+            "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
+            "docroot" => "/srv/vhost_sample",
+            "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
+            "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+          },
+          "my-site.localhost" => {
+            "vhost" => "my-site.localhost",
+            "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
+            "port" => "80",
+            "docroot" => "/srv/vhost_sample",
+            "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
+            "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+          }
+        }
+      }
+    end
     expect(apache2['vhosts']).to eql(vhost_hash)
   end
 end

@@ -39,12 +39,26 @@ platforms:
       require_chef_omnibus: true
     run_list:
     - recipe[unattended-upgrades]
-# TODO: Fix 13.10 tests
-#  - name: ubuntu-13.10
-#    driver_config:
-#      box: vagrant-ubuntu-13.10
-#      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box
-#      require_chef_omnibus: true
+  - name: ubuntu-13.10
+    driver_config:
+      box: vagrant-ubuntu-13.10
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box
+      require_chef_omnibus: true
+    run_list:
+    - recipe[unattended-upgrades]
+    attributes:
+      apache:
+        version: "2.4"
+  - name: ubuntu-14.04
+    driver_config:
+      box: vagrant-ubuntu-14.04
+      box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box
+      require_chef_omnibus: true
+    run_list:
+    - recipe[unattended-upgrades]
+    attributes:
+      apache:
+        version: "2.4"
   - name: centos-5
     driver_config:
       box: vagrant-centos-5
@@ -87,11 +101,11 @@ suites:
   attributes:
     build_essential:
       compiletime: true
-    ohai_plugins_test:
-      ref: <%= ENV['OHAI_PLUGINS_VERSION'] || "HEAD" %>
-      ohai:
-        ref: <%= ENV['OHAI_VERSION'] || "HEAD" %>
     mysql:
       server_root_password: passw0rd
       server_debian_password: passw0rd
       server_repl_password: passw0rd
+    ohai_plugins_test:
+      ref: <%= ENV['OHAI_PLUGINS_VERSION'] || "HEAD" %>
+      ohai:
+        ref: <%= ENV['OHAI_VERSION'] || "HEAD" %>
