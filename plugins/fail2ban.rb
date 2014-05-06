@@ -28,7 +28,7 @@ Ohai.plugin(:Fail2ban) do
   def activity_log
     logfile = logfile_path
 
-    so = shell_out("grep -e 'Ban\\|Unban' #{logfile}")
+    so = shell_out("grep -e ' Ban \\| Unban ' #{logfile}")
     lines = so.stdout.split("\n")
     Ohai::Log.debug("fail2ban ban lines: #{lines}")
 
