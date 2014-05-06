@@ -1,8 +1,8 @@
 # Encoding: utf-8
 # Report passwd statuses
 
-Ohai.plugin(:Passwd) do
-  provides 'passwd'
+Ohai.plugin(:PasswordStatus) do
+  provides 'password_status'
 
   def get_passwd_status
     passwd = {}
@@ -24,8 +24,8 @@ Ohai.plugin(:Passwd) do
   collect_data(:linux) do
     status = get_passwd_status
     unless status.empty?
-      passwd Mash.new
-      passwd.merge!(status)
+      password_status Mash.new
+      password_status.merge!(status)
     end
   end
 
