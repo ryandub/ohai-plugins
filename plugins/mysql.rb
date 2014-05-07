@@ -7,15 +7,6 @@ Ohai.plugin(:Mysql) do
     return Hash[mysqlstatus.scan(/(\w+): (\w+)/).map { |(k, v)| [k.downcase.to_sym, v.to_i] }]
   end
 
-  def max_sql_connections()
-    command = <<-EOS
-      #{mysql_bin()} -e 'show variables like "max_connections"' -B | tail -n 1 | awk '{print $2}'
-    EOS
-
-    so = shell_out(command)
-    return so.stdout.to_i
-  end
-
   def mysql_bin()
     unless @mysql_bin
       so = shell_out("/bin/bash -c 'command -v mysql'")
@@ -44,15 +35,26 @@ Ohai.plugin(:Mysql) do
     return mysqladmin_bin unless mysqladmin_bin.empty?
   end
 
+  def mysql_config(input)
+    command = "#{mysql_bin()} -Bse 'show global #{input}'"
+
+    output = {}
+    so = shell_out(command)
+    so.stdout.lines do |line|
+      line = line.split("\t")
+      output[line[0].downcase] = line[1].rstrip()
+    end
+    return output 
+  end
+
   collect_data(:linux) do
     # Make sure we are on a MySQL Server and have the `mysql` command
     if mysql_bin() && mysqlserver_bin()
       mysql Mash.new
       mysql[:bin] = mysqlserver_bin()
       mysql[:status] = mysql_status()
-      mysql[:configuration] = {
-        :max_connections => max_sql_connections()
-      }
+      mysql[:mysql_variables] = mysql_config('variables')
+      mysql[:mysql_status] = mysql_config('status')
     end
   end
 end
