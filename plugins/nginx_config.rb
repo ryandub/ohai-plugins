@@ -2,6 +2,7 @@
 # Author:: Jason Gignac (<jasonpgignac@gmail.com>)
 #
 # Copyright 2014, Rackspace Inc.
+# Copyright 2012, Riot Games
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Based on ohai template in https://github.com/opscode-cookbooks/nginx 
+# Original ohai template in https://github.com/opscode-cookbooks/nginx 
 # by Jamie Winsor (<jamie@vialstudios.com>)
 
 Ohai.plugin(:NginxConfig) do
