@@ -1,63 +1,61 @@
-{
-  "sources": {
-    "build-essential": {
-      "locked_version": "1.4.0"
-    },
-    "ohai_plugins_test": {
-      "path": "./cookbooks/ohai_plugins_test"
-    },
-    "apache2": {
-      "locked_version": "1.8.15",
-      "git": "git://github.com/onehealth-cookbooks/apache2.git",
-      "ref": "bab6495f825d21371552599ed46a846fb4ad5267"
-    },
-    "mysql": {
-      "locked_version": "4.0.20",
-      "git": "git://github.com/ryandub/mysql.git",
-      "ref": "4432330b04ecfc17bd37f0d258dcda038025c6cb"
-    },
-    "git": {
-      "locked_version": "2.9.1",
-      "git": "git://github.com/opscode-cookbooks/git.git",
-      "ref": "fe2713e528096e5d22441fe53808c79ea77fd0b3"
-    },
-    "yum": {
-      "locked_version": "3.0.9",
-      "git": "git://github.com/opscode-cookbooks/yum.git",
-      "ref": "3799e551ac5441e0aacf1893de3b5fa24fe8da68"
-    },
-    "yum-cron": {
-      "locked_version": "0.1.0",
-      "git": "git://github.com/poppen/yumcron-cookbook.git",
-      "ref": "96c409a753eab402ab56de35a80a880b0bd129ce"
-    },
-    "yum-epel": {
-      "locked_version": "0.2.1",
-      "git": "git://github.com/opscode-cookbooks/yum-epel.git",
-      "ref": "549f9a479d801bfb48ec8d81b03d1b6b28e7e7a0"
-    },
-    "unattended-upgrades": {
-      "locked_version": "1.0.0",
-      "git": "git://github.com/firstbanco/chef-unattended-upgrades.git",
-      "ref": "24cf40f5743fac8e7814e58cc8e3dde2f1ca2de9"
-    },
-    "openssl": {
-      "locked_version": "1.1.0"
-    },
-    "dmg": {
-      "locked_version": "1.1.0"
-    },
-    "windows": {
-      "locked_version": "1.12.8"
-    },
-    "chef_handler": {
-      "locked_version": "1.1.4"
-    },
-    "runit": {
-      "locked_version": "1.5.8"
-    },
-    "apt": {
-      "locked_version": "2.3.8"
-    }
-  }
-}
+DEPENDENCIES
+  apache2
+    git: git://github.com/onehealth-cookbooks/apache2.git
+    revision: bab6495f825d21371552599ed46a846fb4ad5267
+    ref: COOK-39
+  build-essential
+  git
+    git: git://github.com/opscode-cookbooks/git.git
+    revision: b1bca76aaf3a3a2131744f17f6e5087e22fa3c40
+  mysql
+    git: git://github.com/ryandub/mysql.git
+    revision: 4432330b04ecfc17bd37f0d258dcda038025c6cb
+    ref: debian6
+  ohai_plugins_test
+    path: cookbooks/ohai_plugins_test
+  unattended-upgrades
+    git: git://github.com/firstbanco/chef-unattended-upgrades.git
+    revision: c0007662f54ce060e6297d5808cc563306180dfd
+  yum
+    git: git://github.com/opscode-cookbooks/yum.git
+    revision: a42b643c39f04960b9f91bffcb5012473abe206f
+  yum-cron
+    git: git://github.com/poppen/yumcron-cookbook.git
+    revision: 96c409a753eab402ab56de35a80a880b0bd129ce
+  yum-epel
+    git: git://github.com/opscode-cookbooks/yum-epel.git
+    revision: 6ef99e1b09b367c11e4ac0542c472137bdb1f869
+
+GRAPH
+  apache2 (1.8.15)
+  apt (2.3.10)
+  build-essential (1.4.4)
+  chef_handler (1.1.6)
+  dmg (2.2.0)
+  git (4.0.3)
+    build-essential (>= 0.0.0)
+    dmg (>= 0.0.0)
+    runit (>= 1.0.0)
+    windows (>= 0.0.0)
+    yum (~> 3.0)
+    yum-epel (>= 0.0.0)
+  mysql (4.0.20)
+    build-essential (~> 1.4)
+    openssl (~> 1.1)
+  ohai_plugins_test (0.0.1)
+    apache2 (>= 0.0.0)
+    build-essential (>= 0.0.0)
+    git (>= 0.0.0)
+  openssl (1.1.0)
+  runit (1.5.10)
+    build-essential (>= 0.0.0)
+    yum (~> 3.0)
+    yum-epel (>= 0.0.0)
+  unattended-upgrades (1.0.0)
+    apt (>= 0.0.0)
+  windows (1.30.2)
+    chef_handler (>= 0.0.0)
+  yum (3.2.1)
+  yum-cron (0.1.0)
+  yum-epel (0.3.7)
+    yum (~> 3.0)

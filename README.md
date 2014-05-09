@@ -24,19 +24,19 @@ Packages are currently provided/tested for these distributions:
 
 * Ubuntu 10.04
 * Ubuntu 10.10 (Uses 10.04 package)
-* Ubuntu 11.04 (Uses 11.10 package)
-* Ubuntu 11.10
+* Ubuntu 11.04 (Uses 10.04 package)
+* Ubuntu 11.10 (Uses 10.04 package)
 * Ubuntu 12.04
 * Ubuntu 12.10
 * Ubuntu 13.04
 * Ubuntu 13.10 (Uses 13.04 package)
+* Ubuntu 14.04 (Uses 13.04 package)
 * CentOS/RHEL 5 (use "el" as platform name)
 * CentOS/RHEL 6 (use "el" as platform name)
 * Debian 6
 * Debian 7
 
 ###Installing Ohai-Solo:
-
 
 ```
 curl -sSL http://ohai.rax.io/install.sh|bash
@@ -111,3 +111,21 @@ dpkg -i ohai-solo_1.0.5-1.ubuntu.12.04_amd64.deb
 
 This will install `ohai-solo` to `/opt/ohai-solo`. Simply run `ohai-solo` to get all output.
 
+###Contributing:
+If you would like to contribute an Ohai plugin to this project, add the plugin
+to the `plugins` directory. Then write a [serverspec](https://github.com/serverspec/serverspec)
+test in `test/integration/ohaiplugins/serverspec/localhost/` that tests your plugin.
+
+To run tests we will assume you are using `bundler`:
+```
+bundle install --binstubs
+```
+
+There is a provided `.kitchen.rackspace.yml` file if you prefer to use Rackspace
+Performance Cloud Servers for testing instead of Vagrant. To use this workflow,
+copy `.kitchen.rackspace.yml` to `.kitchen.local.yml` and provide the appropriate
+environment variables.
+
+Once setup, run `bundle exec kitchen test` to test all OS's or run
+`bundle exec kitchen test <distro>`. Use `bundle exec kitchen list` to see all
+possibilities.
