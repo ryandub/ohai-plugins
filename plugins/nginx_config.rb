@@ -18,10 +18,6 @@
 
 Ohai.plugin(:NginxConfig) do
   provides "nginx_config"
-  provides "nginx_config/version"
-  provides "nginx_config/configure_arguments"
-  provides "nginx_config/prefix"
-  provides "nginx_config/conf_path"
 
   def parse_flags(flags)
     prefix = nil
@@ -38,43 +34,40 @@ Ohai.plugin(:NginxConfig) do
 
     [ prefix, conf_path ]
   end
+  
+  collect_data(:linux) do
+    nginx_config Mash.new
+    nginx_config[:version]             = nil unless nginx_config[:version]
+    nginx_config[:configure_arguments] = Array.new unless nginx_config[:configure_arguments]
+    nginx_config[:prefix]              = nil unless nginx_config[:prefix]
+    nginx_config[:conf_path]           = nil unless nginx_config[:conf_path]
 
-  nginx_config = Mash.new
-  nginx_config[:version]             = nil unless nginx_config[:version]
-  nginx_config[:configure_arguments] = Array.new unless nginx_config[:configure_arguments]
-  nginx_config[:prefix]              = nil unless nginx_config[:prefix]
-  nginx_config[:conf_path]           = nil unless nginx_config[:conf_path]
+    status, stdout, stderr = run_command(:no_status_check => true, :command => "nginx -V")
 
-  status, stdout, stderr = run_command(:no_status_check => true, :command => "nginx -V")
+    if status == 0
+      stderr.split("\n").each do |line|
+        case line
+        when /^configure arguments:(.+)/
+          # This could be better: I'm splitting on configure arguments which removes them and also
+          # adds a blank string at index 0 of the array. This is why we drop index 0 and map to
+          # add the '--' prefix back to the configure argument.
+          nginx_config[:configure_arguments] = $1.split(/\s--/).drop(1).map { |ca| "--#{ca}" }
 
-  if status == 0
-    stderr.split("\n").each do |line|
-      case line
-      when /^configure arguments:(.+)/
-        # This could be better: I'm splitting on configure arguments which removes them and also
-        # adds a blank string at index 0 of the array. This is why we drop index 0 and map to
-        # add the '--' prefix back to the configure argument.
-        nginx_config[:configure_arguments] = $1.split(/\s--/).drop(1).map { |ca| "--#{ca}" }
+          prefix, conf_path = parse_flags(nginx_config[:configure_arguments])
 
-        prefix, conf_path = parse_flags(nginx_config[:configure_arguments])
-
-        nginx_config[:prefix] = prefix
-        nginx_config[:conf_path] = conf_path
-      when /^nginx version: nginx\/(\d+\.\d+\.\d+)/
-        nginx_config[:version] = $1
+          nginx_config[:prefix] = prefix
+          nginx_config[:conf_path] = conf_path
+        when /^nginx version: nginx\/(\d+\.\d+\.\d+)/
+          nginx_config[:version] = $1
+        end
+      end
+      status, stdout, stderr = run_command(:no_status_check => true, :command => "nginx -t")
+      if status == 0
+        nginx_config[:conf_valid] = true
+      else
+        nginx_config[:conf_valid] = false
+        nginx_config[:conf_errors] = stderr
       end
     end
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "nginx -t")
-    if status == 0
-      nginx_config[:conf_valid] = true
-    else
-      nginx_config[:conf_valid] = false
-      nginx_config[:conf_errors] = stderr
-    end
-    puts "Start..."
-    puts "Stdout: #{stdout}"
-    puts "Stderr: #{stderr}"
-    puts "Status: #{status == 0}"
-    puts "End!"
   end
 end
