@@ -28,7 +28,8 @@ Ohai.plugin(:Permissions) do
       '/etc/ssh/sshd_config',
       '/etc/gshadow',
       '/etc/group',
-      '/etc/login.defs'
+      '/etc/login.defs',
+      '/var/run/php-fpm.sock'
     ]
     permissions Mash.new
     file.each do |filename|
