@@ -44,7 +44,7 @@ describe "MySQL Plugin" do
   end
 
   it "should report max_connections" do
-  	expect(mysql['configuration']['max_connections'].to_i).to be >= 1
+  	expect(mysql['mysql_variables']['max_connections'].to_i).to be >= 1
   end
 
 end
