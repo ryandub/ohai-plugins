@@ -26,7 +26,7 @@ Ohai.plugin(:Rhcs) do
       rhcs_services[svc] = Mash.new
       rhcs_services[svc][:node] = info[1]
       rhcs_services[svc][:state] = info[2]
-      so = shell_out("cat /root/x | grep #{svc} | sed 's/.*last_transition_str=//' | tr -d '\"/>'")
+      so = shell_out("clustat -x | grep #{svc} | sed 's/.*last_transition_str=//' | tr -d '\"/>'")
       rhcs_services[svc][:state_last_changed] = so.stdout.strip
     end
     return rhcs_services
