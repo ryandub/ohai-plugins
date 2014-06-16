@@ -42,9 +42,6 @@ Ohai.plugin(:Rhcs) do
 
   collect_data(:linux) do
     if clustat_bin()
-      #rhcs Mash.new
-      #rhcs[:nodes] = retrieve_node_info()
-      #rhcs[:services] = retrieve_service_info()
       retrieve_node_info
       retrieve_service_info
     end
