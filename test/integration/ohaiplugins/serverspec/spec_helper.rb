@@ -15,25 +15,25 @@ def find_file_by_extension(dir, extension)
   return result
 end
 
-def build_gem(dir, gemspec_file)
-  pwd = Dir.pwd
-  Dir.chdir(dir)
-  gemspec = Gem::Specification.load(gemspec_file)
-  gem = Gem::Builder.new(gemspec).build
-  Dir.chdir(pwd)
-  return gem
-end
+# def build_gem(dir, gemspec_file)
+#  pwd = Dir.pwd
+#  Dir.chdir(dir)
+#  gemspec = Gem::Specification.load(gemspec_file)
+#  gem = Gem::Builder.new(gemspec).build
+#  Dir.chdir(pwd)
+#  return gem
+# end
 
 # TODO: Use environment variables for directory paths
-dir = '/opt/ohai'
+dir = '/opt/ohai-solo'
 gem = find_file_by_extension(dir, '.gem')
-unless gem
-  gemspec = find_file_by_extension(dir, '.gemspec')
-  gem = build_gem(dir, gemspec)
-  gem_name, version = gem.split("-")
-end
+# unless gem
+#  gemspec = find_file_by_extension(dir, '.gemspec')
+#  gem = build_gem(dir, gemspec)
+#  gem_name, version = gem.split("-")
+# end
 
-Busser::RubyGems.install_gem(File.join(dir, gem), version)
+# Busser::RubyGems.install_gem(File.join(dir, gem), version)
 
 require 'ohai'
 
@@ -55,7 +55,7 @@ path = ENV['PATH'].split(":")
 end
 ENV['PATH'] = path.join(":")
 
-PLUGIN_PATH = "/opt/ohai-plugins/plugins"
+PLUGIN_PATH = "/opt/ohai-solo/plugins"
 Ohai::Config[:plugin_path] << PLUGIN_PATH
 o = Ohai::System.new
 o.all_plugins

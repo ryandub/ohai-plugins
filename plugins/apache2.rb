@@ -4,6 +4,11 @@ Ohai.plugin(:Apache2) do
   provides 'apache2'
   depends 'platform', 'platform_family'
 
+  def find_apache2ctl
+    so = shell_out("/bin/bash -c 'command -v apache2ctl'")
+    so.stdout.strip
+  end
+
   def parse_apache_output(apache_command)
     return @parsed_apache if @parsed_apache
     response = {}
@@ -19,6 +24,13 @@ Ohai.plugin(:Apache2) do
       when /-D SERVER_CONFIG_FILE=["']?(.+?)["']?$/
         response[:config_file] = $1.strip
     end
+    end
+
+    if response[:config_path] == '"'
+      response[:config_path] = File.dirname(response[:config_file])
+    else
+      response[:config_file] = File.join(response[:config_path],
+                                          response[:config_file])
     end
 
     output[:stderr].lines do |line|
@@ -40,6 +52,7 @@ Ohai.plugin(:Apache2) do
   end
 
   def parse_vhosts(apache_command)
+    return @parsed_vhosts if @parsed_vhosts
     response = {}
     current_vhost = ''
     so = shell_out("#{apache_command} -S 2>&1")
@@ -77,15 +90,36 @@ Ohai.plugin(:Apache2) do
           accesslogs: configs['access_logs'],
           errorlog: configs['error_log']
         }
+      when /^(\s)*[^:\s]+:[0-9]+/
+        response[:vhosts]  ||= {}
+        response[:vhosts][current_vhost] ||= {}
+          # convert (/etc/httpd/vhost.d/example.com.conf:1) to /etc/httpd/vhost.d/example.com.conf
+        vhosts = line.split[2]
+        conf = line.split[2].to_s.gsub(/\(|\)/, '')
+        port = line.split[1]
+        configs = parse_vhost_config(conf.split(':')[0], conf.split(':')[1])
+        response[:max_clients_status] = configs['max_clients_status']
+        response[:vhosts][current_vhost][line.split[3]] ||= {
+          vhost: vhost,
+          conf: conf,
+          port: port,
+          docroot: configs['docroot'],
+          accesslogs: configs['access_logs'],
+          errorlog: configs['error_log'],
+        }
+        
       end
     end
-    response
+    @parsed_vhosts = response
+    @parsed_vhosts
   end
 
   def parse_vhost_config(file, line_number)
     docroot = nil
     access_logs = []
     error_log = nil
+    error_main = nil
+    max_clients_status = nil
     begin
       f = File.open(file)
       line_number.to_i.times{ f.gets }
@@ -111,13 +145,41 @@ Ohai.plugin(:Apache2) do
       # Make sure we close the file even if there is an error.
       f.close
     end
-
+    # grab location of main log file.
+      f = File.open(apache2[:config_file])
+       
+      line_number.to_i.times{ f.gets }
+      f.each do |line|
+          case line
+          when /^ErrorLog\s.*/
+          line = strip_comments(line)
+          # Parse the docroot line and account for possible spaces and quotes.
+          error_main = line.lstrip.strip.split(' ')[1..-1].join(' ').to_s.gsub(/(\"|\')/, '')
+          error_main = File.join(apache2[:config_path], error_main)
+	  end
+      end 
+      f.close
+      o = File.open(error_main)
+      line_number.to_i.times{ o.gets }
+      o.each do |line|
+          case line
+           when /^MaxClients\s.*/
+           line = strip_comments(line)
+           max_clients_status = line.lstrip.strip.split(' ')[0]
+           end
+      end
+      o.close
+    if max_clients_status =~ /MaxClients/
+	max_clients_status = "MaxClients Reached"
+    else
+	max_clients_status = "MaxClients OK"
+    end	
     config = { 'docroot'     => docroot,
                'access_logs' => access_logs,
-               'error_log'   => error_log }
-
+               'error_log'   => error_log, 
+	       'max_clients_status' => max_clients_status }
     config
-  end
+end
 
   def retrieve_apache_output(apache_command)
     output = {}
@@ -177,12 +239,7 @@ Ohai.plugin(:Apache2) do
 
     return apache_user unless apache_user.empty?
   end
-
-  def find_apache2ctl
-    so = shell_out("/bin/bash -c 'command -v apache2ctl'")
-    so.stdout.strip
-  end
-
+  
   def go_estimate_RAM_per_prefork_child(platform_family, apache2_user)
     command = "ps -u #{apache2_user} -o pid= | xargs pmap -d | awk '/private/ \
                {c+=1; sum+=$4} END {printf \"%.2f\", sum/c/1024}'"
@@ -207,18 +264,13 @@ Ohai.plugin(:Apache2) do
       apache2[:bin] = apache2_bin
       apache2[:user] = find_apache_user(platform_family)
       apache2[:clients] = count_apache_clients(apache2_bin, apache2[:user])
-
+      apache2[:vhosts]
       # Use apache2ctl if platform is Debian based.
       apache2ctl_bin = find_apache2ctl if platform_family == 'debian'
 
       apache2.merge!(parse_apache_output(apache2ctl_bin || apache2_bin))
       apache2.merge!(parse_vhosts(apache2ctl_bin || apache2_bin))
-      if apache2[:config_path] == '"'
-        apache2[:config_path] = File.dirname(apache2[:config_file])
-      else
-        apache2[:config_file] = File.join(apache2[:config_path],
-                                          apache2[:config_file])
-      end
+      apache2[:max_clients_status]
 
       case apache2[:mpm]
       when 'prefork'
