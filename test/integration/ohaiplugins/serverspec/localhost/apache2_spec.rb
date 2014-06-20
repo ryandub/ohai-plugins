@@ -15,7 +15,7 @@ describe "Apache2 Plugin" do
     apache_bin = '/usr/sbin/apache2'
     apache_config_path = '/etc/apache2'
     apache_config_file = '/etc/apache2/apache2.conf'
-    apache_clients_status = 'MaxClients Reached'
+    apache_clients_status = 'MaxClients OK'
     if platform == 'ubuntu' and platform_version >= 13.10
       apache_mpm = 'prefork'
       if platform_version >= 14.04
@@ -32,7 +32,7 @@ describe "Apache2 Plugin" do
     apache_config_path = '/etc/httpd'
     apache_config_file = '/etc/httpd/conf/httpd.conf'
     apache_mpm = 'prefork'
-    apache_clients_status = 'MaxClients Reached'
+    apache_clients_status = 'MaxClients OK'
   end
 
   it 'should return "MaxClients OK"' do
