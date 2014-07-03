@@ -116,6 +116,7 @@ Ohai.plugin(:Postfix) do
               postfix[:current_configuration] = check_configuration
       else
           if find_postfix_executable(platform_family)
+            postfix Mash.new
             postfix[:INFO] = "Postfix is not installed from RPM/DEB packages"
           end         
       end      
