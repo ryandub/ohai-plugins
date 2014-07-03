@@ -39,9 +39,11 @@ Ohai.plugin(:Postfix) do
   def  postfix_config_dir(platform_family)
     case platform_family
     when 'rhel'
-      postfix_config_dir='/etc/postfix/'
+      so = shell_out('postconf |grep ^config_directory')
+      postfix_config_dir=so.stdout.split(' = ')[1].chomp
     when 'debian'
-      postfix_config_dir='/etc/postfix/'
+      so = shell_out('postconf |grep ^config_directory')
+      postfix_config_dir=so.stdout.split(' = ')[1].chomp
     end
     return postfix_config_dir
   end
@@ -49,10 +51,10 @@ Ohai.plugin(:Postfix) do
   def  postfix_config_files(platform_family)
      case platform_family
      when 'rhel'
-       postfix_config_files = Dir.glob(postfix_config_dir(platform_family)+"*")
+       postfix_config_files = Dir.glob(postfix_config_dir(platform_family)+"/*")
  
      when 'debian'
-       postfix_config_files = Dir.glob(postfix_config_dir(platform_family)+"*")
+       postfix_config_files = Dir.glob(postfix_config_dir(platform_family)+"/*")
      end
      return postfix_config_files
    end
@@ -112,6 +114,10 @@ Ohai.plugin(:Postfix) do
               postfix[:config_dir] = postfix_config_dir(platform_family)
               postfix[:config_files] = postfix_config_files(platform_family)
               postfix[:current_configuration] = check_configuration
+      else
+          if find_postfix_executable(platform_family)
+            postfix[:INFO] = "Postfix is not installed from RPM/DEB packages"
+          end         
       end      
  end
 end
