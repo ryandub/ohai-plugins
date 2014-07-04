@@ -3,6 +3,7 @@ Ohai.plugin(:Postfix) do
  depends 'platform_family'
  depends 'packages'
  depends 'processes'
+ 
  def find_postfix_executable
   so = shell_out("/bin/bash -c 'command -v postfix'")
   postfix_bin = so.stdout.strip
@@ -39,52 +40,36 @@ Ohai.plugin(:Postfix) do
    end
     return postfix_config_files
   end
+ 
+  def check_postfix_configuration
+   postconf={}
+   response={}   
+     
+   importantKeys = {
+    "inet_interfaces" => "Postfix Listening On Addresses",
+    "inet_protocols" => "IP protocols in use",
+    "myhostname" => "Postfix Hostname",
+    "mydomain" => "Postfix Domain Name",
+    "mydestination" => "Postfix Final Destinations",
+    "mynetworks" => "Postfix Trusted Client Networks",
+    "myorigin" => "Postfix Origin Address",
+    "allias_database" => "Postfix Aliases Database"
+   }
+      
+   postconfOutput = shell_out('postconf')
 
-  def check_configuration
-    #
-    #  we are only looking at
-    #  some basic configuration metrics
-    # related to LOCAL and REMOTE mail delivery
-    #
-   response = {}
-   so = shell_out('postconf')
-   so.stdout.lines do |line|
-    case line
-    when /^inet_interfaces/
-     interfaces = line.split(' = ')[1].chomp
-     response[:network_interface]=interfaces
-    when /^inet_protocols /
-     postfix_inet_protocols = line.split(' = ')[1].chomp
-     response[:inet_protocols] = postfix_inet_protocols
-    when /^myhostname/
-     postfix_hostname = line.split(' = ')[1].chomp
-     response[:myhostname] = postfix_hostname
-    when /^mydomain/
-     postfix_domain = line.split(' = ')[1].chomp
-     response[:mydomain] = postfix_domain
-    when /^mydestination/
-     postfix_destinations = line.split(' = ')[1].chomp
-     response[:mydestination] = postfix_destinations
-    when /^mynetworks /
-     postfix_networks = line.split(' = ')[1].chomp
-     response[:mynetworks] = postfix_networks
-    when /^myorigin /
-     postfix_origin = line.split(' = ')[1].chomp
-      if postfix_origin.include? "myhostname"
-       response[:myorigin] = response[:myhostname]
-      elsif postfix_origin.include? "mydomain"
-       response[:myorigin] = response[:mydomain]
-      else
-       response[:myorigin] = postfix_origin
-      end
-     when /^alias_database /
-      postfix_aliases = line.split(' = ')[1].chomp
-      response[:alias_database] = postfix_aliases
-    end
+   postconfOutput.stdout.lines do |line|
+    fields = line.split(' = ')
+    postconf[fields[0]] = fields[1].chomp
    end
-   response
-  end
-
+   
+   important_keys.each do |key, value|
+    response[value] = postconf[key]
+   end
+   return response
+  end  
+    
+  
   collect_data(:linux) do
    if packages[:postfix]
     postfix Mash.new
@@ -93,7 +78,7 @@ Ohai.plugin(:Postfix) do
     postfix[:process] = find_postfix_process
     postfix[:config_dir] = postfix_config_dir(platform_family)
     postfix[:config_files] = postfix_config_files(platform_family)
-    postfix[:current_configuration] = check_configuration
+    postfix[:current_configuration] = check_postfix_configuration
    else
     if find_postfix_executable
      postfix Mash.new
