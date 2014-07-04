@@ -1,6 +1,6 @@
 Ohai.plugin(:Postfix) do
  provides 'postfix'
- depends 'platform_family'
+ 
  depends 'packages'
  depends 'processes'
  
@@ -10,15 +10,9 @@ Ohai.plugin(:Postfix) do
   return postfix_bin
  end
 
- def postfix_config_dir(platform_family)
-  case platform_family
-   when 'rhel'
+ def postfix_config_dir
     so = shell_out('postconf |grep ^config_directory')
     postfix_config_dir=so.stdout.split(' = ')[1].chomp
-   when 'debian'
-    so = shell_out('postconf |grep ^config_directory')
-    postfix_config_dir=so.stdout.split(' = ')[1].chomp
-   end
    return postfix_config_dir
  end
 
@@ -31,15 +25,10 @@ Ohai.plugin(:Postfix) do
   return postfix_process unless postfix_process.empty?
  end
 
- def postfix_config_files(platform_family)
-  case platform_family
-   when 'rhel'
-    postfix_config_files = Dir.glob(postfix_config_dir(platform_family)+"/*")
-   when 'debian'
-    postfix_config_files = Dir.glob(postfix_config_dir(platform_family)+"/*")
-   end
-    return postfix_config_files
-  end
+ def find_postfix_config_files
+  postfix_config_files = Dir.glob(postfix_config_dir+"/*")
+  return postfix_config_files
+ end
  
   def check_postfix_configuration
    postconf={}
@@ -63,7 +52,7 @@ Ohai.plugin(:Postfix) do
     postconf[fields[0]] = fields[1].chomp
    end
    
-   important_keys.each do |key, value|
+   importantKeys.each do |key, value|
     response[value] = postconf[key]
    end
    return response
@@ -76,8 +65,8 @@ Ohai.plugin(:Postfix) do
     postfix[:postfix_binary] = find_postfix_executable
     postfix[:postfix_package] = packages[:postfix]
     postfix[:process] = find_postfix_process
-    postfix[:config_dir] = postfix_config_dir(platform_family)
-    postfix[:config_files] = postfix_config_files(platform_family)
+    postfix[:config_dir] = postfix_config_dir
+    postfix[:config_files] = find_postfix_config_files
     postfix[:current_configuration] = check_postfix_configuration
    else
     if find_postfix_executable
