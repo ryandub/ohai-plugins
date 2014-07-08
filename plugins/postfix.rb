@@ -10,12 +10,6 @@ Ohai.plugin(:Postfix) do
   return postfix_bin
  end
 
- def postfix_config_dir
-    so = shell_out('postconf |grep ^config_directory')
-    postfix_config_dir=so.stdout.split(' = ')[1].chomp
-   return postfix_config_dir
- end
-
  def find_postfix_process
   unless @postfix_process
    command= "ps -eo euser,ruser,suser,fuser,f,cmd|grep master|grep -v grep"
@@ -24,16 +18,12 @@ Ohai.plugin(:Postfix) do
   end
   return postfix_process unless postfix_process.empty?
  end
-
- def find_postfix_config_files
-  postfix_config_files = Dir.glob(postfix_config_dir+"/*")
-  return postfix_config_files
- end
  
   def check_postfix_configuration
    postconf={}
    response={}   
-     
+    configuration_files={}
+        
    importantKeys = {
     "inet_interfaces" => "Postfix Listening On Addresses",
     "inet_protocols" => "IP protocols in use",
@@ -42,7 +32,8 @@ Ohai.plugin(:Postfix) do
     "mydestination" => "Postfix Final Destinations",
     "mynetworks" => "Postfix Trusted Client Networks",
     "myorigin" => "Postfix Origin Address",
-    "allias_database" => "Postfix Aliases Database"
+    "alias_database" => "Postfix Aliases Database",
+    "config_directory" => "Postfix Configuration Directory"
    }
       
    postconfOutput = shell_out('postconf')
@@ -50,29 +41,23 @@ Ohai.plugin(:Postfix) do
    postconfOutput.stdout.lines do |line|
     fields = line.split(' = ')
     postconf[fields[0]] = fields[1].chomp
-   end
+    end
    
    importantKeys.each do |key, value|
     response[value] = postconf[key]
    end
+    response[:"Postfix Configuration Files"] = Dir.glob(postconf['config_directory']+"/*")
+   
    return response
   end  
     
   
   collect_data(:linux) do
-   if packages[:postfix]
     postfix Mash.new
     postfix[:postfix_binary] = find_postfix_executable
     postfix[:postfix_package] = packages[:postfix]
     postfix[:process] = find_postfix_process
     postfix[:config_dir] = postfix_config_dir
-    postfix[:config_files] = find_postfix_config_files
     postfix[:current_configuration] = check_postfix_configuration
-   else
-    if find_postfix_executable
-     postfix Mash.new
-     postfix[:INFO] = "Postfix is not installed from RPM/DEB packages"
-    end
-   end
   end
 end
