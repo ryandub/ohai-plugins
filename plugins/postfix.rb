@@ -10,14 +10,17 @@ Ohai.plugin(:Postfix) do
   return postfix_bin
  end
 
- def find_postfix_process
-  unless @postfix_process
-   command= "ps -eo euser,ruser,suser,fuser,f,cmd|grep master|grep -v grep"
-   so = shell_out(command)
-   postfix_process = so.stdout.split(' ')[5].chomp
+  def find_postfix_process
+   unless @postfix_process
+    postfix_process = {}
+    so = shell_out("ps aux | grep [m]aster | awk '{print $2 \", \"$11}' ")
+    ps_output = so.stdout.split(', ')
+    postfix_process = { "Master Process PID" => ps_output[0].chomp,
+                        "Master Process" => ps_output[1].chomp
+                      }
+   end
+   return postfix_process
   end
-  return postfix_process unless postfix_process.empty?
- end
  
   def check_postfix_configuration
    postconf={}
@@ -57,7 +60,6 @@ Ohai.plugin(:Postfix) do
     postfix[:postfix_binary] = find_postfix_executable
     postfix[:postfix_package] = packages[:postfix]
     postfix[:process] = find_postfix_process
-    postfix[:config_dir] = postfix_config_dir
     postfix[:current_configuration] = check_postfix_configuration
   end
 end
