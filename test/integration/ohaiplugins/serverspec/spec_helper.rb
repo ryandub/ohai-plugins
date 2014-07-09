@@ -15,25 +15,8 @@ def find_file_by_extension(dir, extension)
   return result
 end
 
-# def build_gem(dir, gemspec_file)
-#  pwd = Dir.pwd
-#  Dir.chdir(dir)
-#  gemspec = Gem::Specification.load(gemspec_file)
-#  gem = Gem::Builder.new(gemspec).build
-#  Dir.chdir(pwd)
-#  return gem
-# end
-
-# TODO: Use environment variables for directory paths
-dir = '/opt/ohai-solo'
-gem = find_file_by_extension(dir, '.gem')
-# unless gem
-#  gemspec = find_file_by_extension(dir, '.gemspec')
-#  gem = build_gem(dir, gemspec)
-#  gem_name, version = gem.split("-")
-# end
-
-# Busser::RubyGems.install_gem(File.join(dir, gem), version)
+# Install ohai into Busser's environment because we need it.
+Busser::RubyGems.install_gem('ohai', '~> 7.0.4')
 
 require 'ohai'
 
@@ -55,7 +38,7 @@ path = ENV['PATH'].split(":")
 end
 ENV['PATH'] = path.join(":")
 
-PLUGIN_PATH = "/opt/ohai-solo/plugins"
+PLUGIN_PATH = "/opt/ohai-plugins"
 Ohai::Config[:plugin_path] << PLUGIN_PATH
 o = Ohai::System.new
 o.all_plugins
