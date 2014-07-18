@@ -99,6 +99,7 @@ suites:
     - recipe[mysql::client]
     - recipe[mysql::server]
     - recipe[ohai_plugins_test::default]
+    - recipe[ohai_plugins_test::postfix]
     - recipe[ohai_plugins_test::vhosts]
   attributes:
     build_essential:
