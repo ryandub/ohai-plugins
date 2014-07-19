@@ -65,6 +65,7 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-5.10_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
+    - recipe[ohai_plugins_test::disable_ipv6]
     - recipe[yum-cron]
   - name: centos-6
     driver_config:
@@ -72,6 +73,7 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
+    - recipe[ohai_plugins_test::disable_ipv6]
     - recipe[yum-cron]
   - name: debian-6
     driver_config:
@@ -97,6 +99,7 @@ suites:
     - recipe[mysql::client]
     - recipe[mysql::server]
     - recipe[ohai_plugins_test::default]
+    - recipe[ohai_plugins_test::postfix]
     - recipe[ohai_plugins_test::vhosts]
   attributes:
     build_essential:
