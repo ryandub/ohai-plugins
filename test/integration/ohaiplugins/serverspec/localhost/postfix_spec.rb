@@ -4,6 +4,7 @@ postfix = OHAI['postfix']
 processes = OHAI['processes']
 postfix_version = OHAI['packages']['postfix']['version']
 platform_family = OHAI['platform_family']
+platform_version = OHAI['platform_version']
 fqdn = OHAI['fqdn']
 domain = OHAI['domain']
 
@@ -16,8 +17,14 @@ processes.each do |pid, data|
     end
 end
 
+protocols_in_use = 'all'
+
 case platform_family
 when 'debian'
+  if[10, 6].include?(platform_version.to_i)
+    protocols_in_use = 'ipv4'
+  end
+
   listening_address = 'all'
   destinations = [
     fqdn,
@@ -84,7 +91,7 @@ describe "Postfix Plugin" do
     end
 
     it 'should report IP protocols' do
-        expect(postfix['current_configuration']['IP protocols in use']).to eql('all')
+        expect(postfix['current_configuration']['IP protocols in use']).to eql(protocols_in_use)
     end
 
     it 'should report listening address' do
