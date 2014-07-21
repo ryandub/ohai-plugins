@@ -8,6 +8,8 @@ driver_config:
   public_key_path: <%= ENV['SSH_KEY_FILE'] %>
   flavor_id: <%= ENV['RS_FLAVOR'] %>
   rackspace_region: <%= ENV['RS_REGION'] %>
+  no_ssh_tcp_check: true
+  ssh_sleep: 240
 
 platforms:
 - name: ubuntu-1404
@@ -26,24 +28,9 @@ platforms:
   attributes:
     apache:
       version: "2.4"
-- name: ubuntu-1304
-  driver_config:
-    image_id: 4b54f5a0-137f-4751-8e7c-fe707185e531
-  run_list:
-  - recipe[unattended-upgrades]
-- name: ubuntu-1210
-  driver_config:
-    image_id: d45ed9c5-d6fc-4c9d-89ea-1b3ae1c83999
-  run_list:
-  - recipe[unattended-upgrades]
 - name: ubuntu-1204
   driver_config:
     image_id: 80fbcb55-b206-41f9-9bc2-2dd7aac6c061
-  run_list:
-  - recipe[unattended-upgrades]
-- name: ubuntu-1004
-  driver_config:
-    image_id: aab63bcf-89aa-440f-b0c7-c7a1c611914b
   run_list:
   - recipe[unattended-upgrades]
 - name: debian-6
