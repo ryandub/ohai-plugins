@@ -17,25 +17,21 @@ processes.each do |pid, data|
     end
 end
 
-protocols_in_use = 'all'
+protocols_in_use = ['all', 'ipv4']
 origins = [
   '/etc/mailname',
   '$myhostname',
 ]
+networks = "127.0.0.0/8"
 
 case platform_family
 when 'debian'
-  if[10, 6].include?(platform_version.to_i)
-    protocols_in_use = 'ipv4'
-  end
-
   listening_address = 'all'
   destinations = [
     fqdn,
     "localhost.#{domain}",
     'localhost'
   ]
-  networks = "127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
   configfiles = [
     "/etc/postfix/main.cf",
     "/etc/postfix/master.cf",
@@ -52,7 +48,6 @@ when 'rhel'
     'localhost.$mydomain',
     'localhost'
   ]
-  networks = '127.0.0.0/8 [::1]/128'
   configfiles = [
     "/etc/postfix/header_checks",
     "/etc/postfix/relocated",
@@ -93,7 +88,7 @@ describe "Postfix Plugin" do
     end
 
     it 'should report IP protocols' do
-        expect(postfix['current_configuration']['IP protocols in use']).to eql(protocols_in_use)
+        expect(protocols_in_use ).to include(postfix['current_configuration']['IP protocols in use'])
     end
 
     it 'should report listening address' do
@@ -105,7 +100,7 @@ describe "Postfix Plugin" do
     end
 
     it 'should report trusted client networks' do
-       expect(postfix['current_configuration']['Postfix Trusted Client Networks']).to eql(networks)
+       expect(postfix['current_configuration']['Postfix Trusted Client Networks']).to include(networks)
     end
 
     it 'should report origin address' do
