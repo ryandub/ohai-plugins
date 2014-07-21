@@ -18,6 +18,10 @@ processes.each do |pid, data|
 end
 
 protocols_in_use = 'all'
+origins = [
+  '/etc/mailname',
+  '$myhostname',
+]
 
 case platform_family
 when 'debian'
@@ -32,7 +36,6 @@ when 'debian'
     'localhost'
   ]
   networks = "127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
-  origin = '/etc/mailname'
   configfiles = [
     "/etc/postfix/main.cf",
     "/etc/postfix/master.cf",
@@ -50,7 +53,6 @@ when 'rhel'
     'localhost'
   ]
   networks = '127.0.0.0/8 [::1]/128'
-  origin = '$myhostname'
   configfiles = [
     "/etc/postfix/header_checks",
     "/etc/postfix/relocated",
@@ -107,7 +109,7 @@ describe "Postfix Plugin" do
     end
 
     it 'should report origin address' do
-       expect(postfix['current_configuration']['Postfix Origin Address']).to eql(origin)
+       expect(origins).to include(postfix['current_configuration']['Postfix Origin Address'])
     end
 
     it 'should report aliases database' do
