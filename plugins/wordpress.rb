@@ -73,6 +73,7 @@ Ohai.plugin(:Wordpress) do
     require 'find'
     found = {}
     docroots.each do |site_name, site_path|
+      # Excludes list could be a lot smarter...
       excludes = ['.git', '.svn', 'images', 'includes', 'lib', 'wp-content',
                   'wp-includes']
       max_depth = site_path.scan(/\//).count + 3
@@ -82,11 +83,11 @@ Ohai.plugin(:Wordpress) do
         Find.prune if excludes.include?(File.basename(path))
         Find.prune if path.scan(/\//).count > max_depth
         if path.include?('wp-config.php')
-          found[site_name] = {}
-          found[site_name]['path'] = path
-          found[site_name]['version'] = get_version(path)
-          plugins = find_plugins(path)
-          found[site_name]['plugins'] = plugins if plugins
+          found[site_name] = {
+            path: path,
+            version: get_version(path) || 'Unknown',
+            plugins: find_plugins(path) || [],
+          }
           break
         end
       end
