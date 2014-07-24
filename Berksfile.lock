@@ -1,7 +1,7 @@
 DEPENDENCIES
   apache2
     git: git://github.com/onehealth-cookbooks/apache2.git
-    revision: ff24894becf5cd3b48852f9d32e6154748810992
+    revision: 93f0bb7f1298f0e6fac456a15df60a5fac64084e
     ref: COOK-39
   build-essential
   chef-unattended-upgrades
@@ -14,15 +14,15 @@ DEPENDENCIES
     git: git://github.com/customink-webops/hostsfile.git
     revision: 495fd80ba7a3c306abe8c2585f6ec25bd937fc81
   mysql
-    git: git://github.com/opscode-cookbooks/mysql.git
-    revision: 592abbab9bcbbba3642fc427f3be2bc25209de41
-    ref: v5.3.6
+    git: git://github.com/ehaselwanter/mysql.git
+    revision: be93843286199c67c89bdb58110398663c031a31
+    ref: be93843
   ohai_plugins_test
     path: cookbooks/ohai_plugins_test
   wordpress
     git: git://github.com/ryandub/wordpress.git
-    revision: ac534c0b5981f515f483a13195995f8266c6b2af
-    ref: servern
+    revision: a493078758db00a3faede70a799f7b6a00ff7df2
+    ref: testing
   yum
     git: git://github.com/opscode-cookbooks/yum.git
     revision: e09d966bfb34717e96a5bda62c8bfde7dd5cd91d
@@ -95,16 +95,19 @@ GRAPH
     build-essential (>= 0.0.0)
     yum (~> 3.0)
     yum-epel (>= 0.0.0)
+  tar (0.4.0)
   windows (1.33.1)
     chef_handler (>= 0.0.0)
-  wordpress (2.1.1)
+  wordpress (2.1.6)
     apache2 (>= 0.99.4)
     build-essential (>= 0.0.0)
     database (>= 1.6.0)
     iis (>= 1.6.2)
-    mysql (>= 1.0.5)
+    mysql (>= 5.0.0)
+    mysql-chef_gem (>= 0.0.2)
     openssl (>= 0.0.0)
     php (>= 0.0.0)
+    tar (>= 0.3.1)
   xfs (1.1.0)
   xml (1.2.6)
     build-essential (>= 0.0.0)

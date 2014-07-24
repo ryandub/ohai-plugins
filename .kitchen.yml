@@ -11,27 +11,20 @@ driver_config:
 provisioner:
   name: chef_solo
 platforms:
-  - name: ubuntu-10.04
-    driver_config:
-      box: vagrant-ubuntu-10.04
-      box_url: http://files.vagrantup.com/lucid64.box
-      require_chef_omnibus: true
-    run_list:
-    - recipe[unattended-upgrades]
   - name: ubuntu-12.04
     driver_config:
       box: vagrant-ubuntu-12.04
       box_url: http://files.vagrantup.com/precise64.box
       require_chef_omnibus: true
     run_list:
-    - recipe[unattended-upgrades]
+    - recipe[chef-unattended-upgrades]
   - name: ubuntu-13.10
     driver_config:
       box: vagrant-ubuntu-13.10
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
-    - recipe[unattended-upgrades]
+    - recipe[chef-unattended-upgrades]
     attributes:
       apache:
         version: "2.4"
@@ -41,7 +34,7 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
-    - recipe[unattended-upgrades]
+    - recipe[chef-unattended-upgrades]
     attributes:
       apache:
         version: "2.4"
@@ -67,14 +60,14 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-6.0.8_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
-    - recipe[unattended-upgrades]
+    - recipe[chef-unattended-upgrades]
   - name: debian-7
     driver_config:
       box: vagrant-debian-7
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-7.2.0_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
-    - recipe[unattended-upgrades]
+    - recipe[chef-unattended-upgrades]
 
 suites:
 - name: ohaiplugins
