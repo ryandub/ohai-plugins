@@ -63,31 +63,69 @@ describe "Apache2 Plugin" do
   end
 
   it 'should retrieve the vhost configuration' do
-    vhost_hash = {
-      "*:80" => {
-        "default" => {"vhost"=>"my-site.localhost",
-          "conf" => "/etc/apache2/sites-enabled/my_site.conf:1",
-          "docroot" => "/srv/vhost_sample",
-          "accesslogs" => ["/var/log/apache2/my_site-access.log combined"],
-          "errorlog" => "/var/log/apache2/my_site-error.log"
-        },
-        "my-site.localhost" => {
-          "vhost" => "my-site.localhost",
-          "conf" => "/etc/apache2/sites-enabled/my_site.conf:1",
-          "port" => "80",
-          "docroot" => "/srv/vhost_sample",
-          "accesslogs" => ["/var/log/apache2/my_site-access.log combined"],
-          "errorlog" => "/var/log/apache2/my_site-error.log"
-        },
-        "wordpress.example.com" => {
-          "vhost" => "wordpress.example.com",
-          "conf" => "/etc/apache2/sites-enabled/wordpress.conf:1",
-          "port"=>"80",
-          "docroot" => "/srv/wordpress_sample",
-          "accesslogs" => ["/var/log/apache2/wordpress-access.log combined"],
-          "errorlog" => "/var/log/apache2/wordpress-error.log"
+    if platform_version.to_f >= 13.10
+      vhost_hash = {
+        "*:80" => {
+          "default" => {
+            "vhost" => fqdn,
+            "conf" => "/etc/apache2/sites-enabled/000-default.conf:1",
+            "docroot" => docroot,
+            "accesslogs" => ["${APACHE_LOG_DIR}/access.log combined"],
+            "errorlog" => "${APACHE_LOG_DIR}/error.log"},
+          "#{fqdn}" => {
+            "vhost"=> fqdn,
+            "conf"=>"/etc/apache2/sites-enabled/000-default.conf:1",
+            "port"=>"80",
+            "docroot" => docroot,
+            "accesslogs" => ["${APACHE_LOG_DIR}/access.log combined"],
+            "errorlog" => "${APACHE_LOG_DIR}/error.log"},
+          "my-site.localhost" => {
+            "vhost" => "my-site.localhost",
+            "conf"=>"/etc/apache2/sites-enabled/my_site.conf:1",
+            "port" => "80",
+            "docroot" => "/srv/vhost_sample",
+            "accesslogs" => ["/var/log/apache2/my_site-access.log combined"],
+            "errorlog"=>"/var/log/apache2/my_site-error.log"
+          },
+          "wordpress.example.com" => {
+            "vhost" => "wordpress.example.com",
+            "conf" => "/etc/apache2/sites-enabled/wordpress.conf:1",
+            "port"=>"80",
+            "docroot" => "/srv/wordpress_sample",
+            "accesslogs" => ["/var/log/apache2/wordpress-access.log combined"],
+            "errorlog" => "/var/log/apache2/wordpress-error.log"
+          }
         }
       }
+    else
+      vhost_hash = {
+        "*:80" => {
+          "default" => {
+            "vhost" => "my-site.localhost",
+            "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
+            "docroot" => "/srv/vhost_sample",
+            "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
+            "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+          },
+          "my-site.localhost" => {
+            "vhost" => "my-site.localhost",
+            "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
+            "port" => "80",
+            "docroot" => "/srv/vhost_sample",
+            "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
+            "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+          },
+          "wordpress.example.com" => {
+            "vhost" => "wordpress.example.com",
+            "conf" => "#{apache_config_path}/sites-enabled/wordpress.conf:1",
+            "port"=>"80",
+            "docroot" => "/srv/wordpress_sample",
+            "accesslogs" => ["/var/log/#{apache_name}/wordpress-access.log combined"],
+            "errorlog" => "/var/log/#{apache_name}/wordpress-error.log"
+          }
+        }
+      }
+    end
 
     expect(apache2['vhosts']).to eql(vhost_hash)
   end

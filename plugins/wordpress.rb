@@ -49,10 +49,8 @@ Ohai.plugin(:Wordpress) do
           file.each_line do |line|
             if line =~ /Version: /
               version = line.split(':')[1].strip
-              puts version
             elsif line =~ /Plugin Name: /
               name = line.split(':')[1].strip
-              puts name
             elsif name && version
               plugins[name] = {}
               plugins[name]['version'] = version
