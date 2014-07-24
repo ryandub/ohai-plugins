@@ -24,6 +24,7 @@ describe "Apache2 Plugin" do
       apache_mpm = 'worker'
       docroot = '/var/www'
     end
+    apache_mpm = 'prefork'
   elsif platform_family == 'rhel'
     apache_name = "httpd"
     apache_user = 'apache'
@@ -66,7 +67,7 @@ describe "Apache2 Plugin" do
       vhost_hash = {
         "*:80" => {
           "default" => {
-            "vhost" => fqdn, 
+            "vhost" => fqdn,
             "conf" => "/etc/apache2/sites-enabled/000-default.conf:1",
             "docroot" => docroot,
             "accesslogs" => ["${APACHE_LOG_DIR}/access.log combined"],
@@ -85,6 +86,14 @@ describe "Apache2 Plugin" do
             "docroot" => "/srv/vhost_sample",
             "accesslogs" => ["/var/log/apache2/my_site-access.log combined"],
             "errorlog"=>"/var/log/apache2/my_site-error.log"
+          },
+          "wordpress.example.com" => {
+            "vhost" => "wordpress.example.com",
+            "conf" => "/etc/apache2/sites-enabled/wordpress.conf:1",
+            "port"=>"80",
+            "docroot" => "/srv/wordpress_sample",
+            "accesslogs" => ["/var/log/apache2/wordpress-access.log combined"],
+            "errorlog" => "/var/log/apache2/wordpress-error.log"
           }
         }
       }
@@ -105,10 +114,19 @@ describe "Apache2 Plugin" do
             "docroot" => "/srv/vhost_sample",
             "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
             "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+          },
+          "wordpress.example.com" => {
+            "vhost" => "wordpress.example.com",
+            "conf" => "#{apache_config_path}/sites-enabled/wordpress.conf:1",
+            "port"=>"80",
+            "docroot" => "/srv/wordpress_sample",
+            "accesslogs" => ["/var/log/#{apache_name}/wordpress-access.log combined"],
+            "errorlog" => "/var/log/#{apache_name}/wordpress-error.log"
           }
         }
       }
     end
+
     expect(apache2['vhosts']).to eql(vhost_hash)
   end
 end
