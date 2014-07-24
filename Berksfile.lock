@@ -1,8 +1,12 @@
 DEPENDENCIES
   apache2
     git: git://github.com/onehealth-cookbooks/apache2.git
-    revision: 93f0bb7f1298f0e6fac456a15df60a5fac64084e
+    revision: 44e769f5e8a57bb338f93d9fb25fc7effa958f83
     ref: COOK-39
+  apt
+    git: git://github.com/opscode-cookbooks/apt.git
+    revision: ac1917c66a9d67fb4a0afeffaa92195b7385887e
+    ref: ac1917c
   build-essential
   chef-unattended-upgrades
     git: git://github.com/firstbanco/chef-unattended-upgrades.git
@@ -39,7 +43,7 @@ GRAPH
     iptables (>= 0.0.0)
     logrotate (>= 0.0.0)
     pacman (>= 0.0.0)
-  apt (2.4.0)
+  apt (2.4.1)
   aws (2.3.0)
   build-essential (2.0.4)
   chef-sugar (2.0.0)

@@ -1,6 +1,7 @@
 source 'https://api.berkshelf.com'
 
 cookbook 'apache2', :github => 'onehealth-cookbooks/apache2', :ref => 'COOK-3900'
+cookbook 'apt', :github => 'opscode-cookbooks/apt', :ref => 'ac1917c66a9d67fb4a0afeffaa92195b7385887e'
 cookbook 'build-essential'
 cookbook 'git', :github => 'opscode-cookbooks/git'
 cookbook 'mysql', :github => 'ehaselwanter/mysql', :ref => 'be93843286199c67c89bdb58110398663c031a31'

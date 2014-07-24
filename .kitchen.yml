@@ -17,6 +17,7 @@ platforms:
       box_url: http://files.vagrantup.com/precise64.box
       require_chef_omnibus: true
     run_list:
+    - recipe[apt]
     - recipe[chef-unattended-upgrades]
   - name: ubuntu-13.10
     driver_config:
@@ -24,6 +25,7 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
+    - recipe[apt]
     - recipe[chef-unattended-upgrades]
     attributes:
       apache:
@@ -34,6 +36,7 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
+    - recipe[apt]
     - recipe[chef-unattended-upgrades]
     attributes:
       apache:
@@ -60,6 +63,7 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-6.0.8_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
+    - recipe[apt]
     - recipe[chef-unattended-upgrades]
   - name: debian-7
     driver_config:
@@ -67,6 +71,7 @@ platforms:
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_debian-7.2.0_chef-provisionerless.box
       require_chef_omnibus: true
     run_list:
+    - recipe[apt]
     - recipe[chef-unattended-upgrades]
 
 suites:
@@ -82,6 +87,8 @@ suites:
     - recipe[ohai_plugins_test::vhosts]
     - recipe[ohai_plugins_test::wordpress]
   attributes:
+    apt:
+      compile_time_update: true
     build_essential:
       compiletime: true
     mysql:
