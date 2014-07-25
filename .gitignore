@@ -4,3 +4,7 @@
 
 .gem*
 Gemfile.lock
+
+.buildpath
+.project
+
