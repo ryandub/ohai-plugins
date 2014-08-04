@@ -9,39 +9,40 @@ Ohai.plugin(:Sophos) do
     end
   end
 
-  def get_sophos_data()
-    sophos Mash.new
-    so = shell_out("/opt/sophos-av/bin/savdstatus --version")
-    so.stdout.lines do |line|
-      version = /Sophos Anti-Virus[[:space:]]+=[[:space:]]+([0-9.]+)/.match(line)
-        if version
-          sophos[:version] = version[1]
-          next
-        end
-      last_update = /Last update[[:space:]]+=[[:space:]]+(.*)/.match(line)
-      if last_update
+  def get_sophos_version()
+    version_file = '/opt/sophos-av/engine/version'
 
-        datetime = /[[:alpha:]]{3} ([[:alpha:]]{3})[[:space:]]{1,2}([[:digit:]]{1,2}) ([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2}) ([[:digit:]]{4})/.match(last_update[1])
-
-        month = Date::ABBR_MONTHNAMES.index(datetime[1])
-        day = datetime[2].to_i
-        hour = datetime[3]
-        minute = datetime[4]
-        second = datetime[5]
-        year = datetime[6]
-        update_date = Mash.new
-        update_date[:time] = "%s:%s:%s" % [ hour, minute, second ]
-        update_date[:date] = {
-          'day' => "%02d" % day,
-          'month' => "%02d" % month,
-          'year' => year
-        }
-        sophos[:last_update] = update_date
-      end
+    if File.exists?(version_file)
+      version_fd = File.new(version_file, 'r')
+      version = version_fd.gets().chomp()
     end
 
-    return sophos
+    return version
   end
+
+  def get_sophos_update(sophos)
+    update_file = '/opt/sophos-av/etc/update.last_update'
+
+    if File.exists?(update_file)
+
+      update_fd = File.new(update_file)
+      update_time = update_fd.gets().chomp()
+      date = Time.at(update_time.to_i).strftime('%H:%M:%S %Y %m %d %Z').split(' ')
+
+      sophos[:last_update] = {
+        :timezone => date[4],
+        :time => date[0],
+        :date => {
+          :year => date[1],
+          :month => date[2],
+          :day => date[3]
+        }
+      }
+
+    end
+  end
+
+
 
   def check_active(filename)
     
@@ -60,18 +61,22 @@ Ohai.plugin(:Sophos) do
 
   def get_sophos_status(sophos)
     
-    sophos[:onaccess_status] = check_active("/opt/sophos-av/var/run/onaccess.status")
-    sophos[:savd_status] = check_active("/opt/sophos-av/var/run/savd.status")
-    sophos[:av_status] = check_active("/opt/sophos-av/var/run/av.status")
+    sophos[:status] = {
+      :onaccess => check_active("/opt/sophos-av/var/run/onaccess.status"),
+      :savd => check_active("/opt/sophos-av/var/run/savd.status"),
+      :av => check_active("/opt/sophos-av/var/run/av.status")
+    }
 
-    return sophos
   end
 
   collect_data(:linux) do
+
     if sophos_bin()
 
-      sophos = get_sophos_data
-      sophos = get_sophos_status(sophos)
+      sophos Mash.new
+      get_sophos_status(sophos)
+      get_sophos_update(sophos)
+      sophos[:version] = get_sophos_version()
 
     end
   end
