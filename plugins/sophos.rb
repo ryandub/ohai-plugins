@@ -25,16 +25,16 @@ Ohai.plugin(:Sophos) do
 
         month = Date::ABBR_MONTHNAMES.index(datetime[1])
         day = datetime[2].to_i
-        hour = datetime[3].to_i
-        minute = datetime[4].to_i
-        second = datetime[5].to_i
-        year = datetime[6].to_i
+        hour = datetime[3]
+        minute = datetime[4]
+        second = datetime[5]
+        year = datetime[6]
         update_date = Mash.new
-        update_date[:time] = "%2d:%2d:%2d" % [ hour, minute, second ]
+        update_date[:time] = "%s:%s:%s" % [ hour, minute, second ]
         update_date[:date] = {
-          'day' => "%2d" % day,
-          'month' => "%2d" % month,
-          'year' => "%4d" % year
+          'day' => "%02d" % day,
+          'month' => "%02d" % month,
+          'year' => year
         }
         sophos[:last_update] = update_date
       end
@@ -43,9 +43,36 @@ Ohai.plugin(:Sophos) do
     return sophos
   end
 
+  def check_active(filename)
+    
+    if File.exists?(filename)
+
+      status_file = File.new(filename, 'r')
+      line = status_file.gets
+      if (line.chomp() == 'active')
+        return 'active'
+
+      end
+    end
+
+    return 'inactive'
+  end
+
+  def get_sophos_status(sophos)
+    
+    sophos[:onaccess_status] = check_active("/opt/sophos-av/var/run/onaccess.status")
+    sophos[:savd_status] = check_active("/opt/sophos-av/var/run/savd.status")
+    sophos[:av_status] = check_active("/opt/sophos-av/var/run/av.status")
+
+    return sophos
+  end
+
   collect_data(:linux) do
     if sophos_bin()
-      get_sophos_data
+
+      sophos = get_sophos_data
+      sophos = get_sophos_status(sophos)
+
     end
   end
 
