@@ -1,10 +1,10 @@
-for dir in ['/opt/sophos-av/etc', '/opt/sophos-av/var/run', '/opt/sophos-av/engine']
+['/opt/sophos-av/etc', '/opt/sophos-av/var/run', '/opt/sophos-av/engine', '/opt/sophos-av/bin'].each do |dir|
   directory dir do
     owner "root"
     group "root"
     mode "0755"
     action :create
-    recurseive true
+    recursive true
   end
 end
 
