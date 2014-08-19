@@ -86,6 +86,7 @@ suites:
     - recipe[ohai_plugins_test::postfix]
     - recipe[ohai_plugins_test::vhosts]
     - recipe[ohai_plugins_test::wordpress]
+    - recipe[ohai_plugins_test::sophos]
   attributes:
     apt:
       compile_time_update: true
