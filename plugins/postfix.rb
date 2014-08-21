@@ -93,7 +93,6 @@ Ohai.plugin(:Postfix) do
       response[value] = postfix_queues[key]
     end
     
-    
     return response
   end
 
