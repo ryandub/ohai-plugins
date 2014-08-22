@@ -32,13 +32,19 @@ case node['platform_family']
 when 'rhel'
   bash "make cronjob" do
     code <<-EOH
-    echo -e "0 0 1 3 0 root echo hello" > /var/spool/cron/root
+    echo -e "# THIS IS A COMMENT" > /var/spool/cron/root
+    echo -e "MAILTO=root" >> /var/spool/cron/root
+    echo -e "0 0 1 3 0 root echo hello" >> /var/spool/cron/root
+    echo -e "@reboot echo hello" >> /var/spool/cron/root
     EOH
   end
 when 'debian'
   bash "make cronjob" do
     code <<-EOH
-    echo -e "0 0 1 3 0 root echo hello" > /var/spool/cron/crontabs/root
+    echo -e "# THIS IS A COMMENT" > /var/spool/cron/crontabs/root
+    echo -e "MAILTO=root" >> /var/spool/cron/crontabs/root
+    echo -e "0 0 1 3 0 root echo hello" >> /var/spool/cron/crontabs/root
+    echo -e "@reboot echo hello" >> /var/spool/cron/crontabs/root
     EOH
   end
 end
