@@ -113,19 +113,53 @@ This will install `ohai-solo` to `/opt/ohai-solo`. Simply run `ohai-solo` to get
 
 ###Contributing:
 If you would like to contribute an Ohai plugin to this project, add the plugin
-to the `plugins` directory. Then write a [serverspec](https://github.com/serverspec/serverspec)
-test in `test/integration/ohaiplugins/serverspec/localhost/` that tests your plugin.
+to the `plugins` directory. Create a [serverspec](https://github.com/serverspec/serverspec)
+test in `test/integration/ohaiplugins/serverspec/localhost/` that tests your 
+plugin, named like `pluginname_spec.rb`.
 
-To run tests we will assume you are using `bundler`:
+If the Ohai plugin needs the O/S to be in a non-default state, create or 
+reference a Chef recipe. Either modify `Berksfile` to refer to a third party
+recipe, or create one under `cookbooks/ohai_plugins_test/recipes/` to configure 
+the test environment for your plugin (e.g. install packages, modify config 
+files). Reference the Chef recipe for either all O/S types, or just specific 
+ones in `.kitchen.yml` and `.kitchen.rackspace.yml`, e.g.:
 ```
-bundle install --binstubs
+run_list:
+- recipe[apache2]                    <- for those referenced in Berksfile
+- recipe[ohai_plugins_test::rhcs]    <- for those created locally
 ```
+You'll need to reference your forked ohai-plugins git repo and branch in
+`cookbooks/ohai_plugins_test/attributes/default.rb` as this is pulled into the 
+test environments.
 
+Install bundler and then run:
+```
+bundle 
+
+You can now test all OSs with:
+```
+bundle exec kitchen test
+```
+or just one with for example:
+```
+bundle exec kitchen test ohaiplugins-centos-6
+```
+check the possible OS types with:
+```
+bundle exec kitchen list
+```
+If a test fails, you can delete the test environment with for example:
+```
+bundle exec kitchen destroy ohaiplugins-centos-6
+```
 There is a provided `.kitchen.rackspace.yml` file if you prefer to use Rackspace
-Performance Cloud Servers for testing instead of Vagrant. To use this workflow,
-copy `.kitchen.rackspace.yml` to `.kitchen.local.yml` and provide the appropriate
-environment variables.
-
-Once setup, run `bundle exec kitchen test` to test all OS's or run
-`bundle exec kitchen test <distro>`. Use `bundle exec kitchen list` to see all
-possibilities.
+cloud Servers for testing instead of Vagrant. To use Rackspace cloud servers 
+copy `.kitchen.rackspace.yml` to `.kitchen.local.yml` and provide the 
+environment variables:
+```
+export RS_USERNAME=<username>
+export RS_APIKEY=<apikey>
+export SSH_KEY_FILE=/root/.ssh/id_rsa.pub
+export RS_FLAVOR=performance1-1
+export RS_REGION=lon,dfw,ord,iad,syd,hkg
+```
