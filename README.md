@@ -135,7 +135,7 @@ test environments.
 Install bundler and then run:
 ```
 bundle 
-
+```
 You can now test all OSs with:
 ```
 bundle exec kitchen test
