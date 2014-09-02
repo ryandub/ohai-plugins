@@ -29,13 +29,13 @@ DEPENDENCIES
     ref: testing
   yum
     git: git://github.com/opscode-cookbooks/yum.git
-    revision: e09d966bfb34717e96a5bda62c8bfde7dd5cd91d
+    revision: 219daf77d691452dccd9ba3fed314894efe69f2d
   yum-cron
     git: git://github.com/poppen/yumcron-cookbook.git
     revision: 96c409a753eab402ab56de35a80a880b0bd129ce
   yum-epel
     git: git://github.com/opscode-cookbooks/yum-epel.git
-    revision: 6ef99e1b09b367c11e4ac0542c472137bdb1f869
+    revision: e93a18faa7be9a987fb91325ac8c62e65d24fed3
 
 GRAPH
   apache2 (1.10.5)
@@ -44,20 +44,20 @@ GRAPH
     logrotate (>= 0.0.0)
     pacman (>= 0.0.0)
   apt (2.4.1)
-  aws (2.3.0)
-  build-essential (2.0.4)
-  chef-sugar (2.0.0)
+  aws (2.4.0)
+  build-essential (2.0.6)
+  chef-sugar (2.2.0)
   chef-unattended-upgrades (1.0.1)
     apt (>= 0.0.0)
   chef_handler (1.1.6)
-  database (2.2.0)
+  database (2.3.0)
     aws (>= 0.0.0)
     mysql (>= 5.0.0)
     mysql-chef_gem (>= 0.0.0)
     postgresql (>= 1.0.0)
     xfs (>= 0.0.0)
   dmg (2.2.0)
-  freebsd (0.1.4)
+  freebsd (0.1.9)
   git (4.0.3)
     build-essential (>= 0.0.0)
     dmg (>= 0.0.0)
@@ -91,7 +91,7 @@ GRAPH
     windows (>= 0.0.0)
     xml (>= 0.0.0)
     yum-epel (>= 0.0.0)
-  postgresql (3.4.1)
+  postgresql (3.4.2)
     apt (>= 1.9.0)
     build-essential (>= 0.0.0)
     openssl (>= 0.0.0)
@@ -99,8 +99,8 @@ GRAPH
     build-essential (>= 0.0.0)
     yum (~> 3.0)
     yum-epel (>= 0.0.0)
-  tar (0.4.0)
-  windows (1.33.1)
+  tar (0.5.0)
+  windows (1.34.2)
     chef_handler (>= 0.0.0)
   wordpress (2.1.6)
     apache2 (>= 0.99.4)
@@ -116,9 +116,9 @@ GRAPH
   xml (1.2.6)
     build-essential (>= 0.0.0)
     chef-sugar (>= 0.0.0)
-  yum (3.2.3)
+  yum (3.2.4)
   yum-cron (0.1.0)
-  yum-epel (0.3.7)
+  yum-epel (0.4.0)
     yum (~> 3.0)
   yum-mysql-community (0.1.10)
     yum (>= 3.0)
