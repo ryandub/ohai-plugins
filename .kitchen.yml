@@ -57,6 +57,7 @@ platforms:
     run_list:
     - recipe[ohai_plugins_test::disable_ipv6]
     - recipe[yum-cron]
+    - recipe[ohai_plugins_test::rhcs]
   - name: debian-6
     driver_config:
       box: vagrant-debian-6
