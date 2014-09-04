@@ -80,7 +80,13 @@ Ohai.plugin(:Postfix) do
           "hold" => "Hold Mail",
           "corrupt" => "Corrupt Mail"
         }  
-    postfix_queues = {'incoming' => 0,'active' => 0,'deferred' => 0,'bounce' => 0,'hold' => 0,'corrupt' => 0}
+    postfix_queues = {'incoming' => 0,
+                      'active' => 0,
+                      'deferred' => 0,
+                      'bounce' => 0,
+                      'hold' => 0,
+                      'corrupt' => 0
+    }
     temporary_array = []
     postfix_queues.each do |queue, size|
       # without the extra / it does not work!
