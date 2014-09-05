@@ -9,15 +9,19 @@ Ohai.plugin(:Vulnerabilities) do
     if platform_family == 'rhel'
       so = shell_out("rpm -qa --changelog |grep 'CVE-'")
       so.stdout.lines do |line|
-      cve = line.gsub(/.*CVE-/,'CVE-')[0..12]
-      cves << cve
-    end
+        cve = line.gsub(/.*CVE-/,'CVE-')[0..12]
+        cves << cve
+      end
     elsif platform_family == 'debian'
-      so = shell_out("echo test")
+      so = shell_out("zcat /usr/share/doc/*/changelog.Debian.gz |grep 'CVE-'")
+      so.stdout.lines do |line|
+        cve = line.gsub(/.*CVE-/,'CVE-')[0..12]
+        cves << cve
+      end  
     else
       raise(RuntimeError, "Unsupported OS family #{platform_family}")
     end
-      return cves
+    return cves.sort!.uniq
   end
 
   collect_data(:linux) do
