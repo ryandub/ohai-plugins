@@ -4,6 +4,8 @@
 
 .gem*
 Gemfile.lock
+.bundle
+bin/
 
 .buildpath
 .project
