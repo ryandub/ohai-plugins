@@ -25,6 +25,7 @@ namespace :integration do
     run_kitchen = true
     if ENV['TRAVIS'] == 'true'
       ENV['OHAI_PLUGINS_VERSION'] = ENV['TRAVIS_COMMIT']
+    end
     if ENV['TRAVIS_PULL_REQUEST'] != 'false'
       run_kitchen = false
       ENV['OHAI_PLUGINS_PR'] = ENV['TRAVIS_PULL_REQUEST']
