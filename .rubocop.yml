@@ -8,3 +8,9 @@ AllCops:
     - '.bundle/**/*'
     - 'bin/**/*'
     - 'vendor/**/*'
+
+PerlBackrefs:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
