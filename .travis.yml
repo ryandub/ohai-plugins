@@ -1,5 +1,6 @@
 language: ruby
 bundler_args: --without kitchen_vagrant
+cache: bundler
 rvm:
 - 2.0.0
 before_install:
@@ -7,6 +8,7 @@ before_install:
 - cat ~/.ssh/id_rs.base64 | tr -d ' ' | base64 --decode > ~/.ssh/id_rsa
 - echo -n $RS_PUB_KEY_CHUNK_{0..30} >> ~/.ssh/id_rs.pub.base64
 - cat ~/.ssh/id_rs.pub.base64 |tr -d ' ' | base64 --decode > ~/.ssh/id_rsa.pub
+- cp .kitchen.rackspace.yml .kitchen.local.yml
 script:
 - bundle exec rake style
 - bundle exec kitchen test $KITCHEN_INSTANCE
@@ -14,7 +16,6 @@ after_script:
 - bundle exec kitchen destroy $KITCHEN_INSTANCE
 env:
   global:
-  - KITCHEN_YAML=.kitchen.rackspace.yml
   - SSH_KEY_FILE=~/.ssh/id_rs.pem
   - RS_FLAVOR=performance1-4
   - RS_REGION=dfw

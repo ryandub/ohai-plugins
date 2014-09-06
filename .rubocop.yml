@@ -1,0 +1,9 @@
+AllCops:
+  Include:
+    - '**/Rakefile'
+    - 'plugins/**/*'
+  Exclude:
+    - 'test/**/*'
+    - 'cookbooks/**/*'
+    - '.bundle/**/*'
+    - 'bin/**/*'
