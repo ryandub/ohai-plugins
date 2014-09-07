@@ -8,3 +8,18 @@ AllCops:
     - '.bundle/**/*'
     - 'bin/**/*'
     - 'vendor/**/*'
+
+PerlBackrefs:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+CyclomaticComplexity:
+  Enabled: false
+
+RedundantReturn:
+  Enabled: false
+
+BlockNesting:
+  Enabled: false

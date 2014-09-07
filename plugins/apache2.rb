@@ -4,6 +4,7 @@ Ohai.plugin(:Apache2) do
   provides 'apache2'
   depends 'platform', 'platform_family'
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def parse_apache_output(apache_command)
     return @parsed_apache if @parsed_apache
     response = {}
@@ -29,7 +30,7 @@ Ohai.plugin(:Apache2) do
         response[:syntax_ok] = true
       when /Syntax error\s(.+?)?$/
         response[:syntax_ok] = false
-        errors = $1.split(": ")
+        errors = $1.split(': ')
         errors[0] = 'Syntax error ' + errors[0]
         response[:syntax_errors] = errors
     end
@@ -88,7 +89,7 @@ Ohai.plugin(:Apache2) do
     error_log = nil
     begin
       f = File.open(file)
-      line_number.to_i.times{ f.gets }
+      line_number.to_i.times { f.gets }
       f.each do |line|
         case line
         when /^(?!#)(\s+)?DocumentRoot\s.*/
@@ -96,13 +97,16 @@ Ohai.plugin(:Apache2) do
           # we don't want to return those.
           line = strip_comments(line)
           # Parse the docroot line and account for possible spaces and quotes.
-          docroot = line.lstrip.strip.split(' ')[1..-1].join(' ').to_s.gsub(/(\"|\')/, '')
+          docroot = line.lstrip.strip.split(' ')[1..-1].join(' ').to_s.gsub(
+            /(\"|\')/, '')
         when /^(?!#)(\s+)?ErrorLog\s.*/
           line = strip_comments(line)
-          error_log = line.lstrip.strip.split(' ')[1..-1].join(' ').to_s.gsub(/(\"|\')/, '')
+          error_log = line.lstrip.strip.split(' ')[1..-1].join(' ').to_s.gsub(
+            /(\"|\')/, '')
         when /^(?!#)(\s+)?CustomLog\s.*/
           line = strip_comments(line)
-          access_logs << line.lstrip.strip.split(' ')[1..-1].join(' ').to_s.gsub(/(\"|\')/, '')
+          access_logs << line.lstrip.strip.split(' ')[1..-1].join(
+            ' ').to_s.gsub(/(\"|\')/, '')
         when /^(?!#)(\s+)?<\/VirtualHost>\s.*/
           break
         end
@@ -132,10 +136,13 @@ Ohai.plugin(:Apache2) do
     end
     output
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def strip_comments(text)
     re = Regexp.union(['#'])
+    # rubocop:disable Lint/AssignmentInCondition
     if index = (text =~ re)
+      # rubocop:enable Lint/AssignmentInCondition
       return text[0, index].rstrip
     else
       return text
@@ -156,8 +163,7 @@ Ohai.plugin(:Apache2) do
       so = shell_out("/bin/bash -c 'command -v httpd'")
       apache2_bin = so.stdout.strip
     else
-      raise(RuntimeError, "Apache test cannot run on os type \
-                           #{platform_family}")
+      fail("Apache test cannot run on os type #{platform_family}")
     end
 
     return apache2_bin unless apache2_bin.empty?
@@ -171,8 +177,7 @@ Ohai.plugin(:Apache2) do
       so = shell_out("ps -ef|awk '/httpd/ && !/root/ {print $1}' | uniq")
       apache_user = so.stdout.strip
     else
-      raise(RuntimeError, "Apache test cannot run on os type \
-                           #{platform_family}")
+      fail("Apache test cannot run on os type #{platform_family}")
     end
 
     return apache_user unless apache_user.empty?
@@ -183,26 +188,27 @@ Ohai.plugin(:Apache2) do
     so.stdout.strip
   end
 
-  def go_estimate_RAM_per_prefork_child(platform_family, apache2_user)
+  def estimate_ram_per_prefork_child(platform_family, apache2_user)
     command = "ps -u #{apache2_user} -o pid= | xargs pmap -d | awk '/private/ \
                {c+=1; sum+=$4} END {printf \"%.2f\", sum/c/1024}'"
 
     if platform_family == 'debian'
       so = shell_out(command)
-      return apache2_estimatedRAMperpreforkchild = so.stdout.strip.to_f
+      return a2_ram_per_child = so.stdout.strip.to_f
     elsif platform_family == 'rhel'
       so = shell_out(command)
-      return apache2_estimatedRAMperpreforkchild = so.stdout.strip.to_f
+      return a2_ram_per_child = so.stdout.strip.to_f
     else
-      raise(RuntimeError, "Apache RAM per prefork estimate cannot run on os \
-                           type #{platform_family}")
+      fail("Apache RAM per prefork estimate cannot run on os \
+           type #{platform_family}")
     end
 
-    return apache2_estimatedRAMperpreforkchild unless apache2_estimatedRAMperpreforkchild.empty?
+    return a2_ram_per_child unless a2_ram_per_child.empty?
   end
 
   collect_data(:linux) do
-    if apache2_bin = find_apache_executable(platform_family)
+    apache2_bin = find_apache_executable(platform_family)
+    if apache2_bin
       apache2 Mash.new
       apache2[:bin] = apache2_bin
       apache2[:user] = find_apache_user(platform_family)
@@ -222,7 +228,8 @@ Ohai.plugin(:Apache2) do
 
       case apache2[:mpm]
       when 'prefork'
-        apache2[:estimatedRAMperpreforkchild] = go_estimate_RAM_per_prefork_child(platform_family, apache2[:user])
+        apache2[:estimatedRAMperpreforkchild] = estimate_ram_per_prefork_child(
+          platform_family, apache2[:user])
         max_clients = 0
         inside_prefork_block = false
         File.open(apache2[:config_file], 'r') do |apache2_config|
