@@ -14,3 +14,12 @@ PerlBackrefs:
 
 MethodLength:
   Enabled: false
+
+CyclomaticComplexity:
+  Enabled: false
+
+RedundantReturn:
+  Enabled: false
+
+BlockNesting:
+  Enabled: false
