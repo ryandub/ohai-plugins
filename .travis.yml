@@ -13,10 +13,7 @@ before_install:
 - cat ~/.ssh/id_rs.pub.base64 |tr -d ' ' | base64 --decode > ~/.ssh/id_rsa.pub
 - cp .kitchen.rackspace.yml .kitchen.local.yml
 script:
-- bundle exec rake style
-- bundle exec kitchen test $KITCHEN_INSTANCE
-after_script:
-- bundle exec kitchen destroy $KITCHEN_INSTANCE
+- bundle exec $TEST
 env:
   global:
   - SSH_KEY_FILE=~/.ssh/id_rsa.pub
@@ -57,11 +54,12 @@ env:
   - secure: OjIP2UjhD+1+P5it63N27y3Nu3WZxbCEddXJ8Vht2CgZnLo8hs3k3HFgKQRSz54RnnP0KRi6DguwxU3euieMV8lLJhg9zWWhwB14RT5zG7Wy9+1hybtqmKD3EmHSanwjXWN5q/OY16LLJHOx831tRx161jyfWYosgLm7WNhU6ns=
   - secure: SDlJD7zXfquveQGTQ0HzA4+sdC5XsEcM560xsMjlU5rja8e7RMdxft+b19F3WEvDbxHSnm2cGafVA6u7KyDb73snTamBOrtmEOUMJx6PfdFT1I1jn6GdD4BwLQ7ep6sKQKHM9pspJssBr8o6NJZv1F7j53XgW2Qsqow3QSAQfGk=
   matrix:
-  - KITCHEN_INSTANCE='ubuntu-1404'
-  - KITCHEN_INSTANCE='ubuntu-1310'
-  - KITCHEN_INSTANCE='ubuntu-1204'
-  - KITCHEN_INSTANCE='ubuntu-1004'
-  - KITCHEN_INSTANCE='debian-6'
-  - KITCHEN_INSTANCE='debian-7'
-  - KITCHEN_INSTANCE='centos-5'
-  - KITCHEN_INSTANCE='centos-6'
+  - TEST='rake style'
+  - KITCHEN_INSTANCE='ubuntu-1404' TEST='rake integration:cloud'
+  - KITCHEN_INSTANCE='ubuntu-1310' TEST='rake integration:cloud'
+  - KITCHEN_INSTANCE='ubuntu-1204' TEST='rake integration:cloud'
+  - KITCHEN_INSTANCE='ubuntu-1004' TEST='rake integration:cloud'
+  - KITCHEN_INSTANCE='debian-6' TEST='rake integration:cloud'
+  - KITCHEN_INSTANCE='debian-7' TEST='rake integration:cloud'
+  - KITCHEN_INSTANCE='centos-5' TEST='rake integration:cloud'
+  - KITCHEN_INSTANCE='centos-6' TEST='rake integration:cloud'
