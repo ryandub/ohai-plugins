@@ -64,7 +64,8 @@ Ohai.plugin(:Fail2ban) do
 
     fail2ban Mash.new unless activity.empty? && jails.empty?
     Ohai::Log.debug(activity[-500..-1] || activity)
-    fail2ban[:activity] = (activity[-500..-1] || activity) unless activity.empty?
+    fail2ban[:activity] = (
+      activity[-500..-1] || activity) unless activity.empty?
     fail2ban[:jails] = jails unless jails.empty?
     fail2ban[:banned] = banned unless banned.empty?
     Ohai::Log.debug("Final fail2ban data: #{fail2ban}")

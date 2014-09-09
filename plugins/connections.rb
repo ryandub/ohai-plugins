@@ -23,14 +23,10 @@ Ohai.plugin(:Connections) do
 
     # Get local IP addresses
     addresses = Socket.ip_address_list
-    # rubocop:disable SymbolProc, SpaceBeforeBlockBraces
-    # rubocop:disable SpaceInsideBlockBraces, LineLength
-    local_ipv4_addresses = addresses.reject{|intf| !intf.ipv4?}.map{|inetf| inetf.ip_address}
-    local_ipv6_addresses = addresses.reject{|intf| !intf.ipv6?}.map{|inetf| inetf.ip_address}
+    local_ipv4_addresses = addresses.reject(&:ipv4?).map(&:ip_address)
+    local_ipv6_addresses = addresses.reject(&:ipv6?).map(&:ip_address)
     Ohai::Log.debug("Local IPv4 addresses: #{local_ipv4_addresses}")
     Ohai::Log.debug("Local IPv6 addresses: #{local_ipv6_addresses}")
-    # rubocop:enable SymbolProc, SpaceBeforeBlockBraces
-    # rubocop:enable SpaceInsideBlockBraces, LineLength
 
     # Get connections from netstat
     output = shell_out('netstat -naten')

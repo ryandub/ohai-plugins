@@ -16,11 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Original ohai template in https://github.com/opscode-cookbooks/nginx 
+# Original ohai template in https://github.com/opscode-cookbooks/nginx
 # by Jamie Winsor (<jamie@vialstudios.com>)
 
 Ohai.plugin(:NginxConfig) do
-  provides "nginx_config"
+  provides 'nginx_config'
 
   def parse_flags(flags)
     prefix = nil
@@ -35,11 +35,11 @@ Ohai.plugin(:NginxConfig) do
       end
     end
 
-    [ prefix, conf_path ]
+    [prefix, conf_path]
   end
-  
-  def get_version()
-    lines = execute_nginx("-V")[:stderr].split("\n")
+
+  def get_version
+    lines = execute_nginx('-V')[:stderr].split("\n")
     lines.each do |line|
       case line
       when /^nginx version: nginx\/(\d+\.\d+\.\d+)/
@@ -47,60 +47,62 @@ Ohai.plugin(:NginxConfig) do
       end
     end
   end
-  
-  def get_configure_arguments()
+
+  def get_configure_arguments
     return @conf_args if @conf_args
-    lines = execute_nginx("-V")[:stderr].split("\n")
+    lines = execute_nginx('-V')[:stderr].split("\n")
     lines.each do |line|
       case line
       when /^configure arguments:(.+)/
-        # This could be better: I'm splitting on configure arguments which removes them and also
-        # adds a blank string at index 0 of the array. This is why we drop index 0 and map to
-        # add the '--' prefix back to the configure argument.
+        # This could be better: I'm splitting on configure arguments which
+        # removes them and also adds a blank string at index 0 of the array.
+        # This is why we drop index 0 and map to add the '--' prefix back to
+        # the configure argument.
         return @conf_args = $1.split(/\s--/).drop(1).map { |ca| "--#{ca}" }
       end
     end
   end
-  
-  def get_prefix()
+
+  def get_prefix
     return @prefix if @prefix
-    @prefix, @conf_path = parse_flags(get_configure_arguments())
+    @prefix, @conf_path = parse_flags(get_configure_arguments)
     return @prefix
   end
-  
-  def get_conf_path()
+
+  def get_conf_path
     return @conf_path if @conf_path
-    @prefix, @conf_path = parse_flags(get_configure_arguments())
+    @prefix, @conf_path = parse_flags(get_configure_arguments)
     return @conf_path
   end
-  
-  def execute_nginx(flags = "")
+
+  def execute_nginx(flags = '')
     @v_data ||= {}
     return @v_data[flags] if @v_data[flags]
-    status, stdout, stderr = run_command(:no_status_check => true, :command => "nginx #{flags}")
+    status, stdout, stderr = run_command(no_status_check => true,
+                                         command => "nginx #{flags}")
     return @v_data[flags] = {
       status: status,
       stdout: stdout,
       stderr: stderr
     }
   end
-  
-  def get_conf_valid()
-    return execute_nginx("-t")[:status] == 0
+
+  def get_conf_valid
+    return execute_nginx('-t')[:status] == 0
   end
-  
-  def get_conf_errors()
-    return execute_nginx("-t")[:stderr] if get_conf_valid()
-    return ""
+
+  def get_conf_errors
+    return execute_nginx('-t')[:stderr] if get_conf_valid
+    return ''
   end
-  
+
   collect_data(:linux) do
     nginx_config Mash.new
-    nginx_config[:version]             = get_version()
-    nginx_config[:configure_arguments] = get_configure_arguments()
-    nginx_config[:prefix]              = get_prefix()
-    nginx_config[:conf_path]           = get_conf_path()
-    nginx_config[:conf_valid]          = get_conf_valid()
-    nginx_config[:conf_errors]         = get_conf_errors()
+    nginx_config[:version]             = get_version
+    nginx_config[:configure_arguments] = get_configure_arguments
+    nginx_config[:prefix]              = get_prefix
+    nginx_config[:conf_path]           = get_conf_path
+    nginx_config[:conf_valid]          = get_conf_valid
+    nginx_config[:conf_errors]         = get_conf_errors
   end
 end

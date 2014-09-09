@@ -23,3 +23,9 @@ RedundantReturn:
 
 BlockNesting:
   Enabled: false
+
+AccessorMethodName:
+  Enabled: false
+
+PerceivedComplexity:
+  Enabled: false

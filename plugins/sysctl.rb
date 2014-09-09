@@ -12,7 +12,7 @@ Ohai.plugin(:Sysctl) do
 
     so = shell_out(cmd)
     so.stdout.lines do |line|
-      k, v = line.split(/=/).map { |i| i.strip! }
+      k, v = line.split(/=/).map(&:strip!)
       sysctl[k] = v
     end
   end
