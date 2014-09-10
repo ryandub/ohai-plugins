@@ -1,5 +1,5 @@
 Ohai.plugin(:Webapps) do
-  provides "webapps"
+  provides 'webapps'
 
   collect_data do
     webapps Mash.new

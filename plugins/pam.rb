@@ -15,7 +15,9 @@ Ohai.plugin(:Pam) do
       so.stdout.lines do |line|
         line = strip_comments(line)
         case line
+        # rubocop:disable Metrics/LineLength
         when /^(?!#)(\s+)?(password|auth|account|session)\s(\[.*\]|[a-z].*)\s([a-z].*\.so)\s(.*+$)/
+          # rubocop:enable Metrics/LineLength
           response[name] << {
             'module_interface' => $2.strip,
             'control_flag' => $3.strip,
@@ -31,7 +33,9 @@ Ohai.plugin(:Pam) do
 
   def strip_comments(text)
     re = Regexp.union(['#'])
+    # rubocop:disable Lint/AssignmentInCondition
     if index = (text =~ re)
+      # rubocop:enable Lint/AssignmentInCondition
       return text[0, index].rstrip
     else
       return text

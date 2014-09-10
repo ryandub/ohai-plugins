@@ -7,24 +7,26 @@ Ohai.plugin(:Logins) do
 
     logged_in = []
     previous_logins = []
-    so = shell_out("last")
+    so = shell_out('last')
     so.stdout.lines do |line|
       case line
       when /still logged in/
-        line_data = line.split(" ")
-        logged_in.push({
-          :user => line_data[0],
-          :host => line_data[2],
-          :login_time => "#{line_data[3]} #{line_data[4]} #{line_data[5]}:#{line_data[6]}"
-        })
+        line_data = line.split(' ')
+        logged_in.push(
+          user => line_data[0],
+          host => line_data[2],
+          login_time => "#{line_data[3]} #{line_data[4]} #{line_data[5]}"\
+                        ":#{line_data[6]}"
+        )
       else
-        unless line.include?("system boot")
-          line_data = line.split(" ")
-          previous_logins.push({
-            :user => line_data[0],
-            :host => line_data[2],
-            :login_time => "#{line_data[3]} #{line_data[4]} #{line_data[5]}:#{line_data[6]}"
-          })
+        unless line.include?('system boot')
+          line_data = line.split(' ')
+          previous_logins.push(
+            user => line_data[0],
+            host => line_data[2],
+            login_time => "#{line_data[3]} #{line_data[4]} #{line_data[5]}"\
+                          ":#{line_data[6]}"
+          )
         end
       end
     end

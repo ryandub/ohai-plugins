@@ -25,18 +25,30 @@ namespace :integration do
     run_kitchen = true
     if ENV['TRAVIS'] == 'true'
       ENV['OHAI_PLUGINS_VERSION'] = ENV['TRAVIS_COMMIT']
-    end
-    if ENV['TRAVIS_PULL_REQUEST'] != 'false'
-      run_kitchen = false
-      ENV['OHAI_PLUGINS_PR'] = ENV['TRAVIS_PULL_REQUEST']
+      if ENV['TRAVIS_PULL_REQUEST'] != 'false'
+        puts('Pull Request Testing Disabled.')
+        run_kitchen = false
+        ENV['OHAI_PLUGINS_PR'] = ENV['TRAVIS_PULL_REQUEST']
+      end
     end
 
     if run_kitchen
+      test_platform = ENV['KITCHEN_INSTANCE']
+      tests = []
       Kitchen.logger = Kitchen.default_file_logger
-      @loader = Kitchen::Loader::YAML.new(project_config: './.kitchen.rackspace.yml')
+      @loader = Kitchen::Loader::YAML.new(project_config: './.kitchen.yml')
       config = Kitchen::Config.new(loader: @loader)
-      config.instances.each do |instance|
-        instance.test(:always)
+      if test_platform
+        config.instances.each do |instance|
+          tests << instance if instance.name.include?(test_platform)
+        end
+        tests.each do |test|
+          test.test(:always)
+        end
+      else
+        config.instances.each do |instance|
+          instance.test(:always)
+        end
       end
     end
   end
