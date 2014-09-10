@@ -17,6 +17,9 @@ DEPENDENCIES
   hostsfile
     git: git://github.com/customink-webops/hostsfile.git
     revision: 495fd80ba7a3c306abe8c2585f6ec25bd937fc81
+  magento
+    git: git://github.com/nathan-d/magento-testing.git
+    revision: b0d4db33466821b32ad844836e9c3bf166a6c51b
   mysql
     git: git://github.com/ehaselwanter/mysql.git
     revision: be93843286199c67c89bdb58110398663c031a31
@@ -70,6 +73,9 @@ GRAPH
     windows (>= 1.2.6)
   iptables (0.13.2)
   logrotate (1.6.0)
+  magento (0.1.0)
+    apache2 (>= 0.0.0)
+    chef-sugar (>= 0.0.0)
   mysql (5.3.6)
     yum-mysql-community (>= 0.0.0)
   mysql-chef_gem (0.0.2)
