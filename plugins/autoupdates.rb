@@ -16,7 +16,9 @@ Ohai.plugin(:Autoupdates) do
       enabled_config = false
       so = shell_out('apt-config dump')
       so.stdout.lines do |line|
-        enabled_config = true if line.strip =~ /APT::Periodic::Unattended-Upgrade \"1\"/
+        if line.strip =~ /APT::Periodic::Unattended-Upgrade \"1\"/
+          enabled_config = true
+        end
       end
       return true if enabled_config && File.exist?('/etc/cron.daily/apt')
     end

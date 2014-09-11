@@ -20,7 +20,7 @@ describe 'Sophos Plugin' do
   end
 
   it 'check time of last update' do
-    expect(sophos['last_update']).to to be_a(Hash)
+    expect(sophos['last_update']).to be_a(Hash)
   end
 
   it 'check time of last update returned' do

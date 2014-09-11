@@ -2,11 +2,25 @@ execute "use_ipv4" do
   command "echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6"
 end
 
+bash "git_clone_ohai_plugins_pull_request" do
+  user 'root'
+  cwd '/opt'
+  code <<-EOH
+  git clone #{node[:ohai_plugins_test][:repo]} /opt/ohai-plugins
+  cd /opt/ohai-plugins
+  git fetch origin pull/#{node[:ohai_plugins_test][:pr]}/head:prtest
+  git checkout prtest
+  EOH
+  only_if { !node[:ohai_plugins_test][:pr].nil? }
+end
+
 git "/opt/ohai-plugins" do
   repository node[:ohai_plugins_test][:repo]
   reference node[:ohai_plugins_test][:ref]
   action :sync
-  not_if { File.exists?("/home/vagrant") } # Use synced folder for local testing.
+  not_if do
+    File.exist?('/home/vagrant') || !node[:ohai_plugins_test][:pr].nil?
+  end
 end
 
 git '/opt/ohai' do

@@ -99,6 +99,7 @@ suites:
       server_debian_password: passw0rd
       server_repl_password: passw0rd
     ohai_plugins_test:
+      pr: <%= ENV['OHAI_PLUGINS_PR'] || nil %>
       ref: <%= ENV['OHAI_PLUGINS_VERSION'] || "HEAD" %>
       ohai:
         ref: <%= ENV['OHAI_VERSION'] || "HEAD" %>

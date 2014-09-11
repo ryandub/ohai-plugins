@@ -14,3 +14,7 @@ web_app "my_site" do
   server_aliases ["www.my-site.localhost"]
   docroot "/srv/vhost_sample"
 end
+
+apache_site '000-default' do
+  enable false
+end

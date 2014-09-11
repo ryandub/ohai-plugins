@@ -9,7 +9,7 @@ Ohai.plugin(:Wordpress) do
     docroots = {}
     unless apache2['vhosts'].empty?
       # Build hash of docroots to iterate
-      apache2['vhosts'].each do |vhost_name, vhost|
+      apache2['vhosts'].each do |_vhost_name, vhost|
         vhost.each do |site_name, site|
           docroots[site_name] = site['docroot']
         end
@@ -37,9 +37,16 @@ Ohai.plugin(:Wordpress) do
 
   def find_plugins(path)
     plugins = {}
-    dirs = Dir.glob(File.join(File.dirname(path), '/wp-content/plugins/*')).select { |f| File.directory? f }
+    # rubocop:disable Blocks
+    dirs = Dir.glob(File.join(File.dirname(path),
+                              '/wp-content/plugins/*')).select {
+                                |f| File.directory? f
+                              }
     dirs.each do |dir|
-      files = Dir.glob(File.join(dir, '*.php')).select { |f| !File.directory? f }
+      files = Dir.glob(File.join(dir, '*.php')).select {
+        |f| !File.directory? f
+      }
+      # rubocop:enable Blocks
       # Read php files to find plugin metadata. Stop when data is found.
       files.each do |php_file|
         begin
@@ -75,6 +82,7 @@ Ohai.plugin(:Wordpress) do
       excludes = ['.git', '.svn', 'images', 'includes', 'lib', 'wp-content',
                   'wp-includes']
       max_depth = site_path.scan(/\//).count + 3
+      # rubocop:disable Next
       Find.find(site_path) do |path|
         # Do not traverse excluded directories and stop
         # once max_depth is reached.
@@ -84,11 +92,12 @@ Ohai.plugin(:Wordpress) do
           found[site_name] = {
             path: path,
             version: get_version(path) || 'Unknown',
-            plugins: find_plugins(path) || [],
+            plugins: find_plugins(path) || []
           }
           break
         end
       end
+      # rubocop:enable Next
     end
     return found unless found.empty?
   end
