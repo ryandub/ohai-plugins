@@ -67,13 +67,19 @@ describe 'Apache2 Plugin' do
       vhost_hash = {
         '*:80' => {
           'default' => {
-            'vhost' => 'my-site.localhost',
-            'conf' => '/etc/apache2/sites-enabled/my_site.conf:1',
-            'docroot' => '/srv/vhost_sample',
-            'accesslogs' => [
-              '/var/log/apache2/my_site-access.log combined'
-            ],
-            'errorlog' => '/var/log/apache2/my_site-error.log'
+            'vhost' => 'magento.example.com',
+            'conf' => '/etc/apache2/sites-enabled/magento.conf:1',
+            'docroot' => '/srv/magento',
+            'accesslogs' => ['/var/log/apache2/magento-access.log combined'],
+            'errorlog' => '/var/log/apache2/magento-error.log'
+          },
+          'magento.example.com' => {
+            'vhost' => 'magento.example.com',
+            'conf' => '/etc/apache2/sites-enabled/magento.conf:1',
+            'port' => '80',
+            'docroot' => '/srv/magento',
+            'accesslogs' => ['/var/log/apache2/magento-access.log combined'],
+            'errorlog' => '/var/log/apache2/magento-error.log'
           },
           'my-site.localhost' => {
             'vhost' => 'my-site.localhost',
@@ -101,11 +107,19 @@ describe 'Apache2 Plugin' do
       vhost_hash = {
         '*:80' => {
           'default' => {
-            'vhost' => 'my-site.localhost',
-            'conf' => "#{apache_config_path}/sites-enabled/my_site.conf:1",
-            'docroot' => '/srv/vhost_sample',
-            'accesslogs' => ["/var/log/#{apache_name}/my_site-access.log combined"],
-            'errorlog' => "/var/log/#{apache_name}/my_site-error.log"
+            'vhost' => 'magento.example.com',
+            'conf' => "#{apache_config_path}/sites-enabled/magento.conf:1",
+            'docroot' => '/srv/magento',
+            'accesslogs' => ["/var/log/#{apache_name}/magento-access.log combined"],
+            'errorlog' => "/var/log/#{apache_name}/magento-error.log"
+          },
+          'magento.example.com' => {
+            'vhost' => 'magento.example.com',
+            'conf' => "#{apache_config_path}/sites-enabled/magento.conf:1",
+            'port' => '80',
+            'docroot' => '/srv/magento',
+            'accesslogs' => ["/var/log/#{apache_name}/magento-access.log combined"],
+            'errorlog' => "/var/log/#{apache_name}/magento-error.log"
           },
           'my-site.localhost' => {
             'vhost' => 'my-site.localhost',

@@ -87,6 +87,7 @@ suites:
     - recipe[ohai_plugins_test::postfix]
     - recipe[ohai_plugins_test::vhosts]
     - recipe[ohai_plugins_test::wordpress]
+    - recipe[ohai_plugins_test::magento]
     - recipe[ohai_plugins_test::sophos]
   attributes:
     apt:
@@ -104,3 +105,5 @@ suites:
         ref: <%= ENV['OHAI_VERSION'] || "HEAD" %>
     wordpress:
       server_name: wordpress.example.com
+    magento:
+      server_name: magento.example.com
