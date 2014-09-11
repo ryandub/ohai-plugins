@@ -1,5 +1,6 @@
 Ohai.plugin(:Mysql) do
   provides 'mysql'
+  depends 'platform', 'platform_family'
 
   def mysql_status
     so = shell_out("#{mysqladmin_bin} status")
