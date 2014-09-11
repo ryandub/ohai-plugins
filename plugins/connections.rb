@@ -23,8 +23,8 @@ Ohai.plugin(:Connections) do
 
     # Get local IP addresses
     addresses = Socket.ip_address_list
-    local_ipv4_addresses = addresses.reject{|intf| !intf.ipv4?}.map{|inetf| inetf.ip_address}
-    local_ipv6_addresses = addresses.reject{|intf| !intf.ipv6?}.map{|inetf| inetf.ip_address}
+    local_ipv4_addresses = addresses.reject(&:ipv4?).map(&:ip_address)
+    local_ipv6_addresses = addresses.reject(&:ipv6?).map(&:ip_address)
     Ohai::Log.debug("Local IPv4 addresses: #{local_ipv4_addresses}")
     Ohai::Log.debug("Local IPv6 addresses: #{local_ipv6_addresses}")
 
@@ -47,6 +47,7 @@ Ohai.plugin(:Connections) do
 
           state = line_parts[5]
 
+          # rubocop:disable DoubleNegation, LineLength
           if state == 'LISTEN'
             if local_address == '0.0.0.0'
               Ohai::Log.debug("IPv4 wildcard listener on port #{local_port}")
@@ -55,33 +56,36 @@ Ohai.plugin(:Connections) do
               Ohai::Log.debug("IPv6 wildcard listener on port #{local_port}")
               ipv6_wildcard_ports.add(local_port)
             else
-              Ohai::Log.debug("Listener on port #{local_port} bound to #{local_address}")
+              Ohai::Log.debug("Listener on port #{local_port} bound to \
+                              #{local_address}")
               listeners.add(local_parts.join(':'))
             end
           elsif !!(local_address =~ Resolv::IPv4::Regex) && ipv4_wildcard_ports.include?(local_port)
             remotes.add(foreign_address)
-            Ohai::Log.debug("Skipping #{local_address}:#{local_port} because it looks like "\
-                            "an inbound connection to wildcard listener")
+            Ohai::Log.debug("Skipping #{local_address}:#{local_port} because"\
+                            ' it looks like an inbound connection to wildcard'\
+                            ' listener')
           elsif !!(local_address =~ Resolv::IPv6::Regex) && ipv6_wildcard_ports.include?(local_port)
             remotes.add(foreign_address)
-            Ohai::Log.debug("Skipping #{local_address}:#{local_port} because it "\
-                            "looks like an inbound connection to wildcard listener")
+            Ohai::Log.debug("Skipping #{local_address}:#{local_port} because"\
+                            ' it looks like an inbound connection to wildcard'\
+                            ' listener')
           else
-            Ohai::Log.debug("Possible remote connection to #{foreign_address}:#{foreign_port} detected")
+            Ohai::Log.debug('Possible remote connection to'\
+                            " #{foreign_address}:#{foreign_port} detected")
             remotes.add(foreign_address)
             # Add foreign (remote) ip/port
             active[foreign_address] ||= []
             active[foreign_address] |= [foreign_port]
           end
         end
+        # rubocop:enable DoubleNegation, LineLength
       end
     end
 
     # Get connections from arp cache
     output = shell_out('arp -an')
-    if output
-      lines = output.stdout.split(/\n/).reject(&:empty?)
-    end
+    lines = output.stdout.split(/\n/).reject(&:empty?) if output
 
     if lines
       lines.each do |line|
@@ -101,28 +105,30 @@ Ohai.plugin(:Connections) do
         Ohai::Log.debug("Adding #{address} as a remote without ports")
         connections[address] ||= []
       else
+        # rubocop:disable DoubleNegation, LineLength
         ports.each do |port|
           if !!(address =~ Resolv::IPv4::Regex) && ipv4_wildcard_ports.include?(port)
-            Ohai::Log.debug("Skipping #{address}:#{port} because it looks like "\
-                            "an inbound connection to wildcard listener")
+            Ohai::Log.debug("Skipping #{address}:#{port} because it looks"\
+                            ' like an inbound connection to wildcard listener')
           elsif !!(address =~ Resolv::IPv6::Regex) && ipv6_wildcard_ports.include?(port)
-            Ohai::Log.debug("Skipping #{address}:#{port} because it looks like "\
-                            "an inbound connection to wildcard listener")
+            Ohai::Log.debug("Skipping #{address}:#{port} because it looks"\
+                            ' like an inbound connection to wildcard listener')
           elsif !!(address =~ Resolv::IPv4::Regex) && local_ipv4_addresses.include?(address)
-            Ohai::Log.debug("Skipping #{address}:#{port} because it looks like "\
-                            "a local connection to a local address")
+            Ohai::Log.debug("Skipping #{address}:#{port} because it looks"\
+                            ' like a local connection to a local address')
           elsif !!(address =~ Resolv::IPv6::Regex) && ipv6_wildcard_ports.include?(port)
             Ohai::Log.debug("Skipping #{address}:#{port} because it looks like"\
-                            "a local connection to a local address")
+                            ' a local connection to a local address')
           elsif listeners.include?("#{address}:#{port}")
             Ohai::Log.debug("Skipping #{address}:#{port} because it looks like"\
-                            "an inbound connection to listener")
+                            ' an inbound connection to listener')
           else
             Ohai::Log.debug("Adding #{address} as a remote to #{port}")
             connections[address] ||= []
             connections[address] |= [port]
           end
         end
+        # rubocop:enable DoubleNegation, LineLength
       end
     end
 

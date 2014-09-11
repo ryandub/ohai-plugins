@@ -7,10 +7,10 @@ platform_version = OHAI['platform_version'].to_f
 fqdn = OHAI['fqdn']
 docroot = '/var/www'
 
-describe "Apache2 Plugin" do
+describe 'Apache2 Plugin' do
 
   if platform_family == 'debian'
-    apache_name = "apache2"
+    apache_name = 'apache2'
     apache_user = 'www-data'
     apache_bin = '/usr/sbin/apache2'
     apache_config_path = '/etc/apache2'
@@ -26,7 +26,7 @@ describe "Apache2 Plugin" do
     end
     apache_mpm = 'prefork'
   elsif platform_family == 'rhel'
-    apache_name = "httpd"
+    apache_name = 'httpd'
     apache_user = 'apache'
     apache_bin = '/usr/sbin/httpd'
     apache_config_path = '/etc/httpd'
@@ -65,63 +65,77 @@ describe "Apache2 Plugin" do
   it 'should retrieve the vhost configuration' do
     if platform_version.to_f >= 13.10
       vhost_hash = {
-        "*:80" => {
-          "default" => {
-            "vhost" => fqdn,
-            "conf" => "/etc/apache2/sites-enabled/000-default.conf:1",
-            "docroot" => docroot,
-            "accesslogs" => ["${APACHE_LOG_DIR}/access.log combined"],
-            "errorlog" => "${APACHE_LOG_DIR}/error.log"},
-          "#{fqdn}" => {
-            "vhost"=> fqdn,
-            "conf"=>"/etc/apache2/sites-enabled/000-default.conf:1",
-            "port"=>"80",
-            "docroot" => docroot,
-            "accesslogs" => ["${APACHE_LOG_DIR}/access.log combined"],
-            "errorlog" => "${APACHE_LOG_DIR}/error.log"},
-          "my-site.localhost" => {
-            "vhost" => "my-site.localhost",
-            "conf"=>"/etc/apache2/sites-enabled/my_site.conf:1",
-            "port" => "80",
-            "docroot" => "/srv/vhost_sample",
-            "accesslogs" => ["/var/log/apache2/my_site-access.log combined"],
-            "errorlog"=>"/var/log/apache2/my_site-error.log"
+        '*:80' => {
+          'default' => {
+            'vhost' => 'magento.example.com',
+            'conf' => '/etc/apache2/sites-enabled/magento.conf:1',
+            'docroot' => '/srv/magento',
+            'accesslogs' => ['/var/log/apache2/magento-access.log combined'],
+            'errorlog' => '/var/log/apache2/magento-error.log'
           },
-          "wordpress.example.com" => {
-            "vhost" => "wordpress.example.com",
-            "conf" => "/etc/apache2/sites-enabled/wordpress.conf:1",
-            "port"=>"80",
-            "docroot" => "/srv/wordpress_sample",
-            "accesslogs" => ["/var/log/apache2/wordpress-access.log combined"],
-            "errorlog" => "/var/log/apache2/wordpress-error.log"
+          'magento.example.com' => {
+            'vhost' => 'magento.example.com',
+            'conf' => '/etc/apache2/sites-enabled/magento.conf:1',
+            'port' => '80',
+            'docroot' => '/srv/magento',
+            'accesslogs' => ['/var/log/apache2/magento-access.log combined'],
+            'errorlog' => '/var/log/apache2/magento-error.log'
+          },
+          'my-site.localhost' => {
+            'vhost' => 'my-site.localhost',
+            'conf' => '/etc/apache2/sites-enabled/my_site.conf:1',
+            'port' => '80',
+            'docroot' => '/srv/vhost_sample',
+            'accesslogs' => [
+              '/var/log/apache2/my_site-access.log combined'
+            ],
+            'errorlog' => '/var/log/apache2/my_site-error.log'
+          },
+          'wordpress.example.com' => {
+            'vhost' => 'wordpress.example.com',
+            'conf' => '/etc/apache2/sites-enabled/wordpress.conf:1',
+            'port' => '80',
+            'docroot' => '/srv/wordpress_sample',
+            'accesslogs' => [
+              '/var/log/apache2/wordpress-access.log combined'
+            ],
+            'errorlog' => '/var/log/apache2/wordpress-error.log'
           }
         }
       }
     else
       vhost_hash = {
-        "*:80" => {
-          "default" => {
-            "vhost" => "my-site.localhost",
-            "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
-            "docroot" => "/srv/vhost_sample",
-            "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
-            "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+        '*:80' => {
+          'default' => {
+            'vhost' => 'magento.example.com',
+            'conf' => "#{apache_config_path}/sites-enabled/magento.conf:1",
+            'docroot' => '/srv/magento',
+            'accesslogs' => ["/var/log/#{apache_name}/magento-access.log combined"],
+            'errorlog' => "/var/log/#{apache_name}/magento-error.log"
           },
-          "my-site.localhost" => {
-            "vhost" => "my-site.localhost",
-            "conf" => "#{apache_config_path}/sites-enabled/my_site.conf:1",
-            "port" => "80",
-            "docroot" => "/srv/vhost_sample",
-            "accesslogs" => ["/var/log/#{apache_name}/my_site-access.log combined"],
-            "errorlog" => "/var/log/#{apache_name}/my_site-error.log"
+          'magento.example.com' => {
+            'vhost' => 'magento.example.com',
+            'conf' => "#{apache_config_path}/sites-enabled/magento.conf:1",
+            'port' => '80',
+            'docroot' => '/srv/magento',
+            'accesslogs' => ["/var/log/#{apache_name}/magento-access.log combined"],
+            'errorlog' => "/var/log/#{apache_name}/magento-error.log"
           },
-          "wordpress.example.com" => {
-            "vhost" => "wordpress.example.com",
-            "conf" => "#{apache_config_path}/sites-enabled/wordpress.conf:1",
-            "port"=>"80",
-            "docroot" => "/srv/wordpress_sample",
-            "accesslogs" => ["/var/log/#{apache_name}/wordpress-access.log combined"],
-            "errorlog" => "/var/log/#{apache_name}/wordpress-error.log"
+          'my-site.localhost' => {
+            'vhost' => 'my-site.localhost',
+            'conf' => "#{apache_config_path}/sites-enabled/my_site.conf:1",
+            'port' => '80',
+            'docroot' => '/srv/vhost_sample',
+            'accesslogs' => ["/var/log/#{apache_name}/my_site-access.log combined"],
+            'errorlog' => "/var/log/#{apache_name}/my_site-error.log"
+          },
+          'wordpress.example.com' => {
+            'vhost' => 'wordpress.example.com',
+            'conf' => "#{apache_config_path}/sites-enabled/wordpress.conf:1",
+            'port'=>'80',
+            'docroot' => '/srv/wordpress_sample',
+            'accesslogs' => ["/var/log/#{apache_name}/wordpress-access.log combined"],
+            'errorlog' => "/var/log/#{apache_name}/wordpress-error.log"
           }
         }
       }

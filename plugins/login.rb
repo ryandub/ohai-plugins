@@ -21,7 +21,9 @@ Ohai.plugin(:Login) do
 
   def strip_comments(text)
     re = Regexp.union(['#'])
+    # rubocop:disable Lint/AssignmentInCondition
     if index = (text =~ re)
+      # rubocop:enable Lint/AssignmentInCondition
       return text[0, index].rstrip
     else
       return text

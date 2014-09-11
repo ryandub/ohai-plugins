@@ -4,7 +4,7 @@ Ohai.plugin(:FilesystemInodes) do
 
   collect_data(:linux) do
     # Grab filesystem inode data from df
-    so = shell_out("df -i")
+    so = shell_out('df -i')
     so.stdout.lines do |line|
       case line
       when /^Filesystem\s+Inodes/

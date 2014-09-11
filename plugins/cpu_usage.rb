@@ -5,7 +5,7 @@ Ohai.plugin(:CPUUsage) do
   collect_data(:linux) do
     cpu[:all] = Mash.new
 
-    so = shell_out("mpstat -P ALL")
+    so = shell_out('mpstat -P ALL')
     so.stdout.lines do |line|
       case line
       when /[0-9]*\.[0-9]{2}$/

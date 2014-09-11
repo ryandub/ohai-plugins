@@ -1,0 +1,31 @@
+AllCops:
+  Include:
+    - '**/Rakefile'
+    - 'plugins/**/*'
+  Exclude:
+    - 'test/**/*'
+    - 'cookbooks/**/*'
+    - '.bundle/**/*'
+    - 'bin/**/*'
+    - 'vendor/**/*'
+
+PerlBackrefs:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+CyclomaticComplexity:
+  Enabled: false
+
+RedundantReturn:
+  Enabled: false
+
+BlockNesting:
+  Enabled: false
+
+AccessorMethodName:
+  Enabled: false
+
+PerceivedComplexity:
+  Enabled: false

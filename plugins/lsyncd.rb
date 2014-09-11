@@ -11,7 +11,8 @@ Ohai.plugin(:Lsyncd) do
 
   def find_lsyncd_process(lsyncd_command)
     unless @lsyncd_process
-      command = "ps -eo euser,ruser,suser,fuser,f,cmd|grep #{lsyncd_command}|grep -v grep"
+      command = "ps -eo euser,ruser,suser,fuser,f,cmd|grep #{lsyncd_command}"\
+                '|grep -v grep'
       so = shell_out(command)
       lsyncd_process = so.stdout.strip
     end
@@ -19,9 +20,7 @@ Ohai.plugin(:Lsyncd) do
   end
 
   def find_lsyncd_config_file(lsyncd_process)
-    unless @lsyncd_config_file
-      config_file = lsyncd_process.split(" ")[6]
-    end
+    config_file = lsyncd_process.split(' ')[6] unless @lsyncd_config_file
     return config_file
   end
 
@@ -37,7 +36,8 @@ Ohai.plugin(:Lsyncd) do
   end
 
   collect_data(:linux) do
-    if lsyncd_bin = find_lsyncd_bin()
+    lsyncd_bin = find_lsyncd_bin
+    if lsyncd_bin
       lsyncd Mash.new
       lsyncd[:bin] = lsyncd_bin
       process = find_lsyncd_process(lsyncd_bin)
