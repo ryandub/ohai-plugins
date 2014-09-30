@@ -39,8 +39,8 @@ Ohai.plugin(:NginxConfig) do
   end
 
   def get_version
-    lines = execute_nginx('-V')[:stderr].split("\n")
-    lines.each do |line|
+    so = shell_out('nginx -v 2>&1')
+    so.stdout.lines.each do |line|
       case line
       when /^nginx version: nginx\/(\d+\.\d+\.\d+)/
         return $1
@@ -50,8 +50,8 @@ Ohai.plugin(:NginxConfig) do
 
   def get_configure_arguments
     return @conf_args if @conf_args
-    lines = execute_nginx('-V')[:stderr].split("\n")
-    lines.each do |line|
+    so = shell_out('nginx -V 2>&1')
+    so.stdout.lines.each do |line|
       case line
       when /^configure arguments:(.+)/
         # This could be better: I'm splitting on configure arguments which
