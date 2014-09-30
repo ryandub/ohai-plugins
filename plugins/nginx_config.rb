@@ -39,7 +39,7 @@ Ohai.plugin(:NginxConfig) do
   end
 
   def get_version
-    so = shell_out("nginx -v 2>&1")
+    so = shell_out('nginx -v 2>&1')
     so.stdout.lines.each do |line|
       case line
       when /^nginx version: nginx\/(\d+\.\d+\.\d+)/
@@ -50,7 +50,7 @@ Ohai.plugin(:NginxConfig) do
 
   def get_configure_arguments
     return @conf_args if @conf_args
-    so = shell_out("nginx -V 2>&1")
+    so = shell_out('nginx -V 2>&1')
     so.stdout.lines.each do |line|
       case line
       when /^configure arguments:(.+)/
