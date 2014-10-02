@@ -24,6 +24,10 @@ DEPENDENCIES
     git: git://github.com/ehaselwanter/mysql.git
     revision: be93843286199c67c89bdb58110398663c031a31
     ref: be93843
+  nginx
+    git: git://github.com/miketheman/nginx.git
+    revision: 0d53f57b7f8d84742e446d31fa42fabc0543eadd
+    ref: v2.7.4
   ohai_plugins_test
     path: cookbooks/ohai_plugins_test
   wordpress
@@ -48,6 +52,8 @@ GRAPH
     pacman (>= 0.0.0)
   apt (2.4.1)
   aws (2.4.0)
+  bluepill (2.3.1)
+    rsyslog (>= 0.0.0)
   build-essential (2.0.6)
   chef-sugar (2.2.0)
   chef-unattended-upgrades (1.0.1)
@@ -81,11 +87,20 @@ GRAPH
   mysql-chef_gem (0.0.2)
     build-essential (>= 0.0.0)
     mysql (>= 0.0.0)
+  nginx (2.7.4)
+    apt (~> 2.2)
+    bluepill (~> 2.3)
+    build-essential (~> 2.0)
+    ohai (~> 2.0)
+    runit (~> 1.2)
+    yum-epel (~> 0.3)
+  ohai (2.0.1)
   ohai_plugins_test (0.0.1)
     apache2 (>= 0.0.0)
     build-essential (>= 0.0.0)
     git (>= 0.0.0)
     hostsfile (>= 0.0.0)
+    nginx (>= 0.0.0)
     wordpress (>= 0.0.0)
   openssl (2.0.0)
     chef-sugar (>= 0.0.0)
@@ -101,6 +116,7 @@ GRAPH
     apt (>= 1.9.0)
     build-essential (>= 0.0.0)
     openssl (>= 0.0.0)
+  rsyslog (1.12.2)
   runit (1.5.10)
     build-essential (>= 0.0.0)
     yum (~> 3.0)

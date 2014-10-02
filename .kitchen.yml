@@ -80,7 +80,6 @@ suites:
   run_list:
     - recipe[build-essential]
     - recipe[git]
-    - recipe[apache2]
     - recipe[mysql::client]
     - recipe[mysql::server]
     - recipe[ohai_plugins_test::default]
@@ -93,6 +92,7 @@ suites:
     apt:
       compile_time_update: true
     build_essential:
+      compile_time: true
       compiletime: true
     mysql:
       server_root_password: passw0rd
