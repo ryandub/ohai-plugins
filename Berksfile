@@ -8,6 +8,7 @@ cookbook 'mysql', :github => 'ehaselwanter/mysql', :ref => 'be93843286199c67c89b
 cookbook 'ohai_plugins_test', :path => 'cookbooks/ohai_plugins_test'
 cookbook 'chef-unattended-upgrades', :github => 'firstbanco/chef-unattended-upgrades'
 cookbook 'hostsfile', :github => 'customink-webops/hostsfile'
+cookbook 'nginx', :github => 'miketheman/nginx', :ref => 'v2.7.4'
 cookbook 'wordpress', :github => 'ryandub/wordpress', :ref => 'testing'
 cookbook 'magento', :github => 'nathan-d/magento-testing.git'
 cookbook 'yum', :github => 'opscode-cookbooks/yum'
