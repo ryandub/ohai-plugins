@@ -89,7 +89,7 @@ Ohai.plugin(:NginxConfig) do
 
   def get_includes
     response =  []
-    file = File.read("/etc/nginx/nginx.conf")
+    file = File.read(@conf_path)
   begin
       file.each_line do |line|
         if /include/.match(line)
@@ -98,7 +98,7 @@ Ohai.plugin(:NginxConfig) do
       end
       response
   end
- end
+  end
 
   def get_conf_valid
     return execute_nginx('-t')[:status] == 0
