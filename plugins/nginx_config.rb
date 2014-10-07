@@ -91,13 +91,12 @@ Ohai.plugin(:NginxConfig) do
     response =  []
     file = File.read(@conf_path)
     begin
-      file.each_line do |line|
-        if /include/.match(line)
-        response << line.gsub("include", "").strip.chop
+      file.each_line do |line| if /include/.match(line)
+        response << line.gsub('include', '').strip.chop
         end
       end
       response
-  end
+    end
   end
 
   def get_conf_valid
