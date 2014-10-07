@@ -87,6 +87,19 @@ Ohai.plugin(:NginxConfig) do
     }
   end
 
+  def get_includes
+    response =  []
+    file = File.read("/etc/nginx/nginx.conf")
+  begin
+      file.each_line do |line|
+        if /include/.match(line)
+        response << line.gsub("include", "").strip.chop
+        end
+      end
+      response
+  end
+ end
+
   def get_conf_valid
     return execute_nginx('-t')[:status] == 0
   end
@@ -102,6 +115,7 @@ Ohai.plugin(:NginxConfig) do
     nginx_config[:configure_arguments] = get_configure_arguments
     nginx_config[:prefix]              = get_prefix
     nginx_config[:conf_path]           = get_conf_path
+    nginx_config[:includes]            = get_includes
     nginx_config[:conf_valid]          = get_conf_valid
     nginx_config[:conf_errors]         = get_conf_errors
   end
