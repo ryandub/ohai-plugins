@@ -12,15 +12,6 @@ end
 
 require 'ohai'
 
-include Serverspec::Helper::Exec
-include Serverspec::Helper::DetectOS
-
-RSpec.configure do |c|
-  c.before :all do
-    c.os = backend(Serverspec::Commands::Base).check_os
-  end
-end
-
 # Setup proper path for sudo environment
 path = ENV['PATH'].split(":")
 ["/sbin", "/usr/sbin", "/usr/local/sbin"].each do |dir|
