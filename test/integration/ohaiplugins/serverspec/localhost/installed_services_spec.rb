@@ -9,8 +9,12 @@ describe 'InstalledServices Plugin' do
   it 'should be a Mash' do
       expect(installed_services).to be_a(Mash)
   end
-
-  unless platform_family == 'rhel' and platform_version < 6
+  
+  if platform_family == 'ubuntu'
+    it 'should have a value for init' do
+      expect(installed_services['init']).not_to be_empty
+    end
+  elsif platform_family == 'rhel' and platform_version < 6
     it 'should have a value for init' do
       expect(installed_services['init']).not_to be_empty
     end
@@ -18,5 +22,11 @@ describe 'InstalledServices Plugin' do
 
   it 'should have a value for initd' do
     expect(installed_services['initd']).not_to be_empty
+  end
+
+  if platform_family == 'rhel' and platform_version > 6
+    it 'should have a value for system' do
+      expect(installed_services['system']).not_to be_empty
+    end
   end
 end

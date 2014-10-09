@@ -10,17 +10,17 @@ Ohai.plugin(:InstalledServices) do
     installed_services['initd'] = Array.new
     installed_services['init'] = Array.new
     installed_services['system'] = Array.new
-    for entries in initd do
-        text = File.basename(entries)
-        installed_services['initd'].push(text.split(' ')[0])
+    initd.each do |entries|
+      text = File.basename(entries)
+      installed_services['initd'].push(text.split(' ')[0])
     end
-    for entries in init do
-        text = File.basename(entries)
-        installed_services['init'].push(text.split('.conf')[0])
+    init.each do |entries|
+      text = File.basename(entries)
+      installed_services['init'].push(text.split('.conf')[0])
     end
-    for entries in system do
-        text = File.basename(entries)
-        installed_services['system'].push(text.split('.service')[0])
+    system.each do |entries|
+      text = File.basename(entries)
+      installed_services['system'].push(text.split('.service')[0])
     end
   end
 end
