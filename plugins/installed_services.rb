@@ -6,8 +6,10 @@ Ohai.plugin(:InstalledServices) do
     installed_services Mash.new
     initd = Dir.glob('/etc/init.d/*')
     init = Dir.glob('/etc/init/*')
+    system = Dir.glob('/usr/lib/systemd/system/*')
     installed_services['initd'] = Array.new
     installed_services['init'] = Array.new
+    installed_services['system'] = Array.new
     for entries in initd do
         text = File.basename(entries)
         installed_services['initd'].push(text.split(' ')[0])
@@ -15,6 +17,10 @@ Ohai.plugin(:InstalledServices) do
     for entries in init do
         text = File.basename(entries)
         installed_services['init'].push(text.split('.conf')[0])
+    end
+    for entries in system do
+        text = File.basename(entries)
+        installed_services['system'].push(text.split('.service')[0])
     end
   end
 end

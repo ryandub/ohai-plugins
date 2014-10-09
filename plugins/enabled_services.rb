@@ -5,12 +5,13 @@ Ohai.plugin(:EnabledServices) do
   collect_data(:linux) do
     enabled_services Mash.new
     systemd = Dir.glob('/etc/systemd/system/multi-user.target.wants/*')
+    systemd += Dir.glob('/etc/systemd/system/basic.target.wants/firewalld.service/*')
     systemv = Dir.glob('/etc/rc3.d/S*')
     enabled_services['systemd'] = Array.new
     enabled_services['systemv'] = Array.new
     for entries in systemd do
         text = File.basename(entries)
-        enabled_services['systemd'].push(text[3, text.size])
+        enabled_services['systemd'].push(text.split('.service')[0])
     end
     for entries in systemv do
         text = File.basename(entries)
