@@ -21,7 +21,7 @@ Ohai.plugin(:EnabledServices) do
     so = shell_out('dbus-send --print-reply --system --dest=com.ubuntu.Upstart'\
                    ' /com/ubuntu/Upstart com.ubuntu.Upstart0_6.GetAllJobs')
     so.stdout.lines do |line|
-      if line.include? 'jobs' 
+      if line.include? 'jobs'
         name = line.split('jobs/')[1].strip
         enabled_services['upstart'].push(name.chomp('"'))
       end
