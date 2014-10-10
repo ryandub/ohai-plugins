@@ -91,7 +91,8 @@ Ohai.plugin(:NginxConfig) do
     response =  []
     file = File.read(@conf_path)
     begin
-      file.each_line do |line| if /include/.match(line)
+      file.each_line do |line| 
+        if /include/.match(line)
         response << line.gsub('include', '').strip.chop
         end
       end
