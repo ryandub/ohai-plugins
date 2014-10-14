@@ -93,7 +93,7 @@ Ohai.plugin(:NginxConfig) do
     begin
       file.each_line do |l|
         if /include/.match(l)
-          response = l.gsub('include', '').strip.chop if /include/.match(l)
+          response << l.gsub('include', '').strip.chop if /include/.match(l)
         end
       end
     end
