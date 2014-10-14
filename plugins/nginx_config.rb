@@ -96,6 +96,7 @@ Ohai.plugin(:NginxConfig) do
           response << line.gsub('include', '').strip.chop if /include/.match(line)
       end
       response
+      end
     end
   end
 
