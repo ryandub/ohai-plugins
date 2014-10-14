@@ -95,9 +95,9 @@ Ohai.plugin(:NginxConfig) do
         if /include/.match(l)
           response = l.gsub('include', '').strip.chop if /include/.match(l)
         end
-      response
       end
     end
+    response
   end
 
   def get_conf_valid
