@@ -87,17 +87,41 @@ Ohai.plugin(:NginxConfig) do
     }
   end
 
-  def get_includes
-    response =  []
+  def get_vhosts
+    r1 = []
+    vhosts = {}
+    vhosts = {}
+    domain = nil 
+    docroot = nil
     file = File.read(@conf_path)
     begin
       file.each_line do |l|
         if /include/.match(l)
-          response << l.gsub('include', '').strip.chop if /include/.match(l)
+          r1 << l.gsub('include', '').strip.chop if /include/.match(l)
         end
       end
     end
-    response
+    files = Dir.glob(r1) do |file|
+    file = File.read(file)
+    file.each_line do |ll|
+      case ll.strip.chop
+        when /^#/
+          next
+        when /^server_name/
+          domain = ll.split[1].chomp(';')
+        when /^root/
+          docroot = ll.split[1].chomp(';')
+        else
+          next 
+        end
+      end # each line
+      if !domain.nil?
+        vhosts[domain] = {}
+        vhosts[domain]['domain'] = domain
+        vhosts[domain]['docroot'] = docroot    
+      end
+    end #file
+  vhosts
   end
 
   def get_conf_valid
