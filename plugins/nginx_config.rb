@@ -114,8 +114,8 @@ Ohai.plugin(:NginxConfig) do
           else
           next
           end
-        end
-        unless domain.nil?
+      end
+      unless domain.nil?
         vhosts[domain] = {}
         vhosts[domain]['domain'] = domain
         vhosts[domain]['docroot'] = docroot
