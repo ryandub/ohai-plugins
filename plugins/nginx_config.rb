@@ -91,7 +91,7 @@ Ohai.plugin(:NginxConfig) do
     r1 = []
     vhosts = {}
     vhosts = {}
-    domain = nil 
+    domain = nil
     docroot = nil
     file = File.read(@conf_path)
     begin
@@ -101,26 +101,26 @@ Ohai.plugin(:NginxConfig) do
         end
       end
     end
-    files = Dir.glob(r1) do |file|
-    file = File.read(file)
-    file.each_line do |ll|
+    file = Dir.glob(r1) do |file|
+      file = File.read(file)
+      file.each_line do |ll|
       case ll.strip.chop
-        when /^#/
-          next
-        when /^server_name/
-          domain = ll.split[1].chomp(';')
-        when /^root/
-          docroot = ll.split[1].chomp(';')
+      when /^#/
+        next
+      when /^server_name/
+        domain = ll.split[1].chomp(';')
+      when /^root/
+        docroot = ll.split[1].chomp(';')
         else
-          next 
+        next
         end
-      end # each line
+      end
       if !domain.nil?
         vhosts[domain] = {}
         vhosts[domain]['domain'] = domain
-        vhosts[domain]['docroot'] = docroot    
+        vhosts[domain]['docroot'] = docroot
       end
-    end #file
+    end
   vhosts
   end
 
