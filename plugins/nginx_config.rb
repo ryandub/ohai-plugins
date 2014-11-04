@@ -101,7 +101,7 @@ Ohai.plugin(:NginxConfig) do
         end
       end
     end
-    file = Dir.glob(r1) do |file|
+    Dir.glob(r1) do |file|
       file = File.read(file)
       file.each_line do |ll|
       case ll.strip.chop
@@ -115,13 +115,13 @@ Ohai.plugin(:NginxConfig) do
         next
         end
       end
-      if !domain.nil?
+      unless domain.nil?
         vhosts[domain] = {}
         vhosts[domain]['domain'] = domain
         vhosts[domain]['docroot'] = docroot
       end
     end
-  vhosts
+    vhosts
   end
 
   def get_conf_valid
@@ -140,6 +140,7 @@ Ohai.plugin(:NginxConfig) do
     nginx_config[:prefix]              = get_prefix
     nginx_config[:conf_path]           = get_conf_path
     nginx_config[:includes]            = get_includes
+    nginx_config[:vhosts]              = get_vhosts
     nginx_config[:conf_valid]          = get_conf_valid
     nginx_config[:conf_errors]         = get_conf_errors
   end
