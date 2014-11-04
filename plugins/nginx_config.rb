@@ -101,21 +101,21 @@ Ohai.plugin(:NginxConfig) do
         end
       end
     end
-    Dir.glob(r1) do |file|
-      file = File.read(file)
-      file.each_line do |ll|
-      case ll.strip.chop
-      when /^#/
-        next
-      when /^server_name/
-        domain = ll.split[1].chomp(';')
-      when /^root/
-        docroot = ll.split[1].chomp(';')
-        else
-        next
+    Dir.glob(r1) do |f|
+      f = File.read(f)
+      f.each_line do |ll|
+        case ll.strip.chop
+        when /^#/
+          next
+        when /^server_name/
+          domain = ll.split[1].chomp(';')
+        when /^root/
+          docroot = ll.split[1].chomp(';')
+          else
+          next
+          end
         end
-      end
-      unless domain.nil?
+        unless domain.nil?
         vhosts[domain] = {}
         vhosts[domain]['domain'] = domain
         vhosts[domain]['docroot'] = docroot
