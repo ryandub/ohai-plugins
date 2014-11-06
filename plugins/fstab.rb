@@ -5,8 +5,8 @@ Ohai.plugin(:Fstab) do
   collect_data(:linux) do
     fstab Mash.new
     fstab_entries = Array.new
-    so = shell_out('cat /etc/fstab')
-    so.stdout.lines.each do |line|
+    f = file.open('/etc/fstab')
+    f.each_line do |line|
       fstab_entries.push(line) unless line.start_with?('#')
     end
     fstab_return = Hash.new
