@@ -133,15 +133,24 @@ Ohai.plugin(:NginxConfig) do
     return ''
   end
 
+  def find_nginx
+    so = shell_out("/bin/bash -c 'command -v nginx'")
+    nginx_bin = so.stdout.strip
+    return nginx_bin unless nginx_bin.empty?
+  end
+
   collect_data(:linux) do
-    nginx_config Mash.new
-    nginx_config[:version]             = get_version
-    nginx_config[:configure_arguments] = get_configure_arguments
-    nginx_config[:prefix]              = get_prefix
-    nginx_config[:conf_path]           = get_conf_path
-    nginx_config[:includes]            = get_includes
-    nginx_config[:vhosts]              = get_vhosts
-    nginx_config[:conf_valid]          = get_conf_valid
-    nginx_config[:conf_errors]         = get_conf_errors
+    nginx = find_nginx
+    if find_nginx
+      nginx_config Mash.new
+      nginx_config[:version]             = get_version
+      nginx_config[:configure_arguments] = get_configure_arguments
+      nginx_config[:prefix]              = get_prefix
+      nginx_config[:conf_path]           = get_conf_path
+      nginx_config[:includes]            = get_includes
+      nginx_config[:vhosts]              = get_vhosts
+      nginx_config[:conf_valid]          = get_conf_valid
+      nginx_config[:conf_errors]         = get_conf_errors
+    end
   end
 end
