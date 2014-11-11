@@ -87,6 +87,43 @@ Ohai.plugin(:NginxConfig) do
     }
   end
 
+  def get_vhosts
+    r1 = []
+    vhosts = {}
+    vhosts = {}
+    domain = nil
+    docroot = nil
+    file = File.read(@conf_path)
+    begin
+      file.each_line do |l|
+        if /include/.match(l)
+          r1 << l.gsub('include', '').strip.chop if /include/.match(l)
+        end
+      end
+    end
+    Dir.glob(r1) do |f|
+      f = File.read(f)
+      f.each_line do |ll|
+        case ll.strip.chop
+        when /^#/
+          next
+        when /^server_name/
+          domain = ll.split[1].chomp(';')
+        when /^root/
+          docroot = ll.split[1].chomp(';')
+          else
+          next
+          end
+      end
+      unless domain.nil?
+        vhosts[domain] = {}
+        vhosts[domain]['domain'] = domain
+        vhosts[domain]['docroot'] = docroot
+      end
+    end
+    vhosts
+  end
+
   def get_conf_valid
     return execute_nginx('-t')[:status] == 0
   end
@@ -102,6 +139,8 @@ Ohai.plugin(:NginxConfig) do
     nginx_config[:configure_arguments] = get_configure_arguments
     nginx_config[:prefix]              = get_prefix
     nginx_config[:conf_path]           = get_conf_path
+    nginx_config[:includes]            = get_includes
+    nginx_config[:vhosts]              = get_vhosts
     nginx_config[:conf_valid]          = get_conf_valid
     nginx_config[:conf_errors]         = get_conf_errors
   end
